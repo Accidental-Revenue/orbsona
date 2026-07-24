@@ -109,4 +109,4 @@ The renderer caps device pixel ratio, pauses when hidden or offscreen, and uses 
 
 There is no automated end-to-end browser suite in the repository yet. This audit exercised the workflows directly in Chrome, but CI should eventually preserve these checks for future releases.
 
-The former `@accidental-revenue/pulseform` npm package remains public registry history. It is not referenced by Orbsona, but deprecating or removing it is a separate maintainer decision because registry removal affects existing consumers.
+The mistakenly published former npm package was unpublished after explicit maintainer approval. It is no longer installable and Orbsona contains no former-name references.

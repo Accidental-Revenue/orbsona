@@ -18,7 +18,7 @@ The source repository is public at `https://github.com/Accidental-Revenue/orbson
 - Working source, routes, metadata, exports, identity format, filenames, storage keys, documentation, package name, and package workspace use Orbsona.
 - Canonical URLs, sitemap, robots metadata, Open Graph image, web manifest, and icon use `https://orbsona.com`.
 - The generated identity format is `orbsona.identity`; the portable extension is `.orbsona.json`.
-- No reference to the former product name remains in the working source outside Git history and external registry history.
+- No reference to the former product name remains in the working source. The mistakenly published former npm package was unpublished and is no longer installable.
 
 ### Application
 
@@ -91,7 +91,6 @@ Confirm canonical and social metadata resolve to the final HTTPS origin.
 - Add browser workflow tests to CI for create/import/reset/PNG/JSON and page navigation.
 - Add npm trusted publishing with provenance.
 - Add a short changelog and release tags beginning with v0.1.0.
-- Decide whether to deprecate or remove the former `@accidental-revenue/pulseform` package. It remains public registry history and is not changed automatically because removal is destructive.
 - Keep the local archive branch private; the public repository intentionally starts from a clean Orbsona launch snapshot.
 
 ## Launch command checklist
