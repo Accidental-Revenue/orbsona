@@ -7,7 +7,7 @@ The repository contains two products that are developed together:
 - A fixed-height Next.js studio for designing one browser-saved draft, importing identity files, and exporting live-ready identities.
 - The `@accidental-revenue/orbsona` package with the versioned identity contract and canvas-based React renderer.
 
-The renderer is prepared for public release as `@accidental-revenue/orbsona`. Release and registry verification are documented in [`docs/npm-publishing.md`](docs/npm-publishing.md).
+The renderer is published on npm as [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona). Release and registry verification are documented in [`docs/npm-publishing.md`](docs/npm-publishing.md).
 
 Source, issues, and releases live at [`Accidental-Revenue/orbsona`](https://github.com/Accidental-Revenue/orbsona).
 
@@ -51,7 +51,7 @@ npm run build
 
 ## Package workspace
 
-After the first public release, install the package with the package manager already used by your application:
+Install the public package with the package manager already used by your application:
 
 ```bash
 npm install @accidental-revenue/orbsona

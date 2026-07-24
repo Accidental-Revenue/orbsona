@@ -1,18 +1,15 @@
 # Orbsona launch readiness
 
 Date: 2026-07-24
-Candidate: website and `@accidental-revenue/orbsona` v0.1.0
+Release: website and `@accidental-revenue/orbsona` v0.1.0
 
 ## Verdict
 
-The product code, source repository, and Vercel deployment are release-ready. Public launch is not complete because two external release gates remain:
+The product code, source repository, Vercel application, and npm package are public. `@accidental-revenue/orbsona@0.1.0` was verified directly against the public npm registry and installed in a clean consumer.
 
-1. npm publication requires the account's one-time browser authentication.
-2. `orbsona.com` is attached to Vercel but its Spaceship DNS records still need to point to the deployment.
+One external launch task remains: `orbsona.com` is attached to Vercel, but its Spaceship DNS records still need to point to the deployment. The product is available now at `https://orbsona.vercel.app`.
 
-Until the npm gate is complete, website and repository copy deliberately describe v0.1.0 as a release candidate rather than falsely claiming that it is live.
-
-The source repository is public at `https://github.com/Accidental-Revenue/orbsona`. The production project belongs to the personal Vercel scope `martinpagac01s-projects` and is available at `https://orbsona.vercel.app` while custom-domain DNS is being completed.
+The source repository is public at `https://github.com/Accidental-Revenue/orbsona`. The production project belongs to the personal Vercel scope `martinpagac01s-projects` and deploys from that repository's `main` branch.
 
 ## Passed checks
 
@@ -43,9 +40,9 @@ The source repository is public at `https://github.com/Accidental-Revenue/orbson
 - Package artifact: 19 intended files
 - Packed size: approximately 21 KB compressed and 97 KB unpacked
 - Artifact contains only `LICENSE`, `README.md`, `package.json`, and `dist`
-- Registry package name: available
+- Public registry package: `@accidental-revenue/orbsona@0.1.0`
 - Authenticated npm account: recognized
-- Publish attempt reached npm successfully and stopped only at the required one-time authentication step
+- npm, pnpm, Yarn, and Bun resolve the same public npm-registry artifact
 
 The package is intentionally ESM-only. Modern Node ESM and bundler resolution pass; CommonJS consumers must use dynamic `import()`, and Node 10 subpath resolution is not supported. This matches the documented package boundary.
 
@@ -65,29 +62,17 @@ The package is intentionally ESM-only. Modern Node ESM and bundler resolution pa
 - Renderer work pauses when hidden or offscreen
 - Canvas pixel density is bounded
 
-## Release gates
+## Release status
 
-### 1. Complete npm browser authentication
+### Completed: public npm release
 
-From the repository root:
-
-```bash
-npm publish --workspace @accidental-revenue/orbsona --access public
-```
-
-Then verify:
-
-```bash
-npm view @accidental-revenue/orbsona version
-```
-
-Install it in a clean temporary project and import both `@accidental-revenue/orbsona` and `@accidental-revenue/orbsona/react`. After verification, update the release-candidate wording in the website and README to “public.”
+`@accidental-revenue/orbsona@0.1.0` is public. Registry metadata, a clean install, the root export, and the React export are verified. Website, repository, and package documentation use present-tense public-release copy.
 
 ### Completed: public source and Git deployment
 
 The clean public root history is pushed to `Accidental-Revenue/orbsona`. Vercel is connected to that exact repository and deploys production from `main`. Package metadata includes repository and issue URLs.
 
-### 2. Finish Spaceship DNS
+### Remaining: finish Spaceship DNS
 
 `orbsona.com` and `www.orbsona.com` are attached to the personal Vercel project. Apply Vercel's current recommended records in Spaceship, verify DNS and TLS, and then exercise the production domain:
 
@@ -106,7 +91,7 @@ Confirm canonical and social metadata resolve to the final HTTPS origin.
 - Add browser workflow tests to CI for create/import/reset/PNG/JSON and page navigation.
 - Add npm trusted publishing with provenance.
 - Add a short changelog and release tags beginning with v0.1.0.
-- Decide whether to deprecate or remove the former npm package. This is intentionally not done automatically because registry removal is destructive.
+- Decide whether to deprecate or remove the former `@accidental-revenue/pulseform` package. It remains public registry history and is not changed automatically because removal is destructive.
 - Keep the local archive branch private; the public repository intentionally starts from a clean Orbsona launch snapshot.
 
 ## Launch command checklist
@@ -117,7 +102,7 @@ npm run test:package
 npm run build
 npm audit --omit=dev --audit-level=high
 npm pack --dry-run --workspace @accidental-revenue/orbsona
-npm publish --workspace @accidental-revenue/orbsona --access public
+npm view @accidental-revenue/orbsona version
 ```
 
-All commands through the package dry run pass. The final publish command is waiting on one-time npm authentication.
+All commands pass for the public v0.1.0 release.

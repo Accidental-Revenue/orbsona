@@ -88,14 +88,17 @@ export function PackageGuide() {
                   <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">@accidental-revenue/orbsona</h2>
                 </div>
               </div>
-              <span
-                className="rounded-full border border-emerald-200/[0.18] bg-emerald-200/[0.06] px-3 py-1.5 text-xs font-medium text-emerald-100/85 transition-colors hover:border-emerald-200/30 hover:bg-emerald-200/[0.1]"
+              <a
+                href="https://www.npmjs.com/package/@accidental-revenue/orbsona"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-emerald-200/[0.18] bg-emerald-200/[0.06] px-3 py-1.5 text-xs font-medium text-emerald-100/85 transition-colors hover:border-emerald-200/30 hover:bg-emerald-200/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                v0.1.0 · release candidate
-              </span>
+                v0.1.0 · public on npm
+              </a>
             </div>
             <p className="mt-5 max-w-3xl text-base leading-7 text-neutral-400">
-              The first public release is prepared under the Accidental Revenue organization. These commands will install the same versioned artifact after v0.1.0 is published.
+              The public package contains the identity contract, TypeScript types, and live React renderer. Every package manager below installs the same v0.1.0 release from npm.
             </p>
             <div className="mt-5 inline-flex flex-wrap rounded-xl border border-white/[0.1] bg-black/20 p-1" role="tablist" aria-label="Package manager">
               {packageManagers.map((manager) => (

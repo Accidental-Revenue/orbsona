@@ -97,9 +97,16 @@ export function UseIdentityDialog({ identity, open, onClose, onDownloadJson }: U
           <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-base font-medium text-neutral-200">React renderer</p>
-              <span className="rounded-full border border-emerald-200/[0.18] bg-emerald-200/[0.06] px-2.5 py-1 text-xs font-medium text-emerald-100/85">Public package</span>
+              <a
+                href="https://www.npmjs.com/package/@accidental-revenue/orbsona"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-emerald-200/[0.18] bg-emerald-200/[0.06] px-2.5 py-1 text-xs font-medium text-emerald-100/85 transition-colors hover:border-emerald-200/30 hover:bg-emerald-200/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                Public on npm
+              </a>
             </div>
-            <p className="mt-1 text-sm leading-6 text-neutral-500">The package supplies the live canvas and runtime states. After v0.1.0 is public, install it from npm and keep this identity file with your application code.</p>
+            <p className="mt-1 text-sm leading-6 text-neutral-500">Install the live renderer from npm, then keep this identity file with your application code and drive it with runtime state.</p>
             <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-white/[0.1] bg-black/25 px-4 py-3">
               <code className="truncate font-mono text-sm text-neutral-300">npm install @accidental-revenue/orbsona</code>
               <span className="shrink-0 text-xs font-medium text-neutral-500">npm registry</span>

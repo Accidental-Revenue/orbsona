@@ -132,12 +132,12 @@ export default function DocumentationPage() {
                 <IconPackage size={20} stroke={1.6} aria-hidden="true" />
               </span>
               <div>
-                <p className="text-sm font-medium text-neutral-500">npm release candidate</p>
+                <p className="text-sm font-medium text-neutral-500">Public npm package · v0.1.0</p>
                 <h2 id="install-package" className="font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">Install the renderer</h2>
               </div>
             </div>
             <p className="mt-4 max-w-3xl text-sm leading-6 text-neutral-500">
-              After v0.1.0 is published, npm, pnpm, Yarn, and Bun will install the same <code className="font-mono text-xs text-neutral-300">@accidental-revenue/orbsona</code> release. Choose the manager already used by your application.
+              npm, pnpm, Yarn, and Bun install the same public <a href="https://www.npmjs.com/package/@accidental-revenue/orbsona" target="_blank" rel="noreferrer" className="font-mono text-xs text-neutral-300 underline decoration-white/20 underline-offset-4 hover:text-white">@accidental-revenue/orbsona</a> release. Choose the manager already used by your application.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {installCommands.map(([manager, command]) => (
