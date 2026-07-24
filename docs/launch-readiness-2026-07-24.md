@@ -5,13 +5,14 @@ Candidate: website and `@accidental-revenue/orbsona` v0.1.0
 
 ## Verdict
 
-The product code and package artifact are release-ready. Public launch is not complete because three external release gates remain:
+The product code, source repository, and Vercel deployment are release-ready. Public launch is not complete because two external release gates remain:
 
 1. npm publication requires the account's one-time browser authentication.
-2. `orbsona.com` is registered but is not serving this application yet.
-3. The local Git repository has no public remote, so the open-source Studio does not yet have a public source location.
+2. `orbsona.com` is attached to Vercel but its Spaceship DNS records still need to point to the deployment.
 
 Until the npm gate is complete, website and repository copy deliberately describe v0.1.0 as a release candidate rather than falsely claiming that it is live.
+
+The source repository is public at `https://github.com/Accidental-Revenue/orbsona`. The production project belongs to the personal Vercel scope `martinpagac01s-projects` and is available at `https://orbsona.vercel.app` while custom-domain DNS is being completed.
 
 ## Passed checks
 
@@ -82,13 +83,13 @@ npm view @accidental-revenue/orbsona version
 
 Install it in a clean temporary project and import both `@accidental-revenue/orbsona` and `@accidental-revenue/orbsona/react`. After verification, update the release-candidate wording in the website and README to “public.”
 
-### 2. Publish the source repository
+### Completed: public source and Git deployment
 
-Create the intended public Git hosting location, add it as this repository's remote, and add `repository`, `bugs`, and source `homepage` metadata to the npm package before a follow-up release. A public source URL is the clearest proof behind the open-source claim and enables issues, contributions, release tags, and trusted publishing.
+The clean public root history is pushed to `Accidental-Revenue/orbsona`. Vercel is connected to that exact repository and deploys production from `main`. Package metadata includes repository and issue URLs.
 
-### 3. Deploy and connect the domain
+### 2. Finish Spaceship DNS
 
-Deploy the optimized application, attach `orbsona.com`, verify DNS and TLS, and then exercise the production domain:
+`orbsona.com` and `www.orbsona.com` are attached to the personal Vercel project. Apply Vercel's current recommended records in Spaceship, verify DNS and TLS, and then exercise the production domain:
 
 - `/`
 - `/playground`
@@ -103,10 +104,10 @@ Confirm canonical and social metadata resolve to the final HTTPS origin.
 ## Recommended immediately after launch
 
 - Add browser workflow tests to CI for create/import/reset/PNG/JSON and page navigation.
-- Add npm trusted publishing with provenance after the public source repository exists.
+- Add npm trusted publishing with provenance.
 - Add a short changelog and release tags beginning with v0.1.0.
 - Decide whether to deprecate or remove the former npm package. This is intentionally not done automatically because registry removal is destructive.
-- Decide whether the public Git history should preserve development history or start from a clean launch snapshot. The current local history still records the earlier working name.
+- Keep the local archive branch private; the public repository intentionally starts from a clean Orbsona launch snapshot.
 
 ## Launch command checklist
 
