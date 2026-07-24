@@ -1,0 +1,68 @@
+{
+  "name": "@accidental-revenue/orbsona",
+  "version": "0.1.0",
+  "description": "Living, state-aware visual identities for AI agents",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node scripts/contract-smoke.mjs",
+    "prepack": "npm run test"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "avatar",
+    "orbsona",
+    "voice-agent",
+    "agent-ui",
+    "voice",
+    "animation",
+    "canvas"
+  ],
+  "homepage": "https://orbsona.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Accidental-Revenue/orbsona.git",
+    "directory": "packages/orbsona"
+  },
+  "bugs": {
+    "url": "https://github.com/Accidental-Revenue/orbsona/issues"
+  },
+  "author": "Accidental Revenue AI Labs",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "thinking-orbs": "0.1.1"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

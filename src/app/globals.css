@@ -1,0 +1,362 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --surface: #111111;
+  --surface-raised: #171717;
+  --muted: #8a8a8a;
+  --border: rgba(255, 255, 255, 0.1);
+  --accent: #4da6ff;
+  --text-ui: 15px;
+  --text-label: 14px;
+  --text-title: 20px;
+  --control-height: 48px;
+  --row-height: 48px;
+  --control-radius: 12px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: "Jost Variable", "Jost", ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: var(--text-ui);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(77, 166, 255, 0.3);
+  color: #ffffff;
+}
+
+.app-shell {
+  background: var(--background);
+}
+
+.studio-input {
+  width: 100%;
+  height: var(--control-height);
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  background: rgba(255, 255, 255, 0.035);
+  padding: 0 0.875rem;
+  color: #f5f5f5;
+  font-size: var(--text-ui);
+  outline: none;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.studio-input:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.studio-input:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(77, 166, 255, 0.15);
+}
+
+.studio-action {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.5rem 0.8rem;
+  color: #a3a3a3;
+  font-size: var(--text-label);
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, transform 120ms ease;
+}
+
+.preview-button {
+  display: inline-flex;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: var(--control-radius);
+  background: rgba(255, 255, 255, 0.045);
+  padding: 0 0.85rem;
+  color: #d4d4d4;
+  font-size: var(--text-label);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.preview-button:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.inspector-content {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.studio-action:hover {
+  border-color: rgba(255, 255, 255, 0.23);
+  background: rgba(255, 255, 255, 0.065);
+  color: #f5f5f5;
+}
+
+.studio-action:active {
+  transform: scale(0.98);
+}
+
+.studio-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.identity-action {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.45rem 0.8rem;
+  color: #b8b8b8;
+  font-size: var(--text-label);
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, transform 120ms ease;
+}
+
+.identity-action:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f5f5;
+}
+
+.identity-action:active {
+  transform: scale(0.98);
+}
+
+.identity-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.preview-grid {
+  background-color: #0b0b0b;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0.5px, transparent 0.5px);
+  background-size: 4px 4px;
+}
+
+.preview-dots {
+  z-index: 1;
+  mask-image: radial-gradient(circle at center, black 8%, rgba(0, 0, 0, 0.94) 48%, transparent 88%);
+}
+
+.dotted-glow-layer {
+  --dot-opacity: 0.24;
+  --dot-duration: 9s;
+  opacity: 0.08;
+  animation: dotted-glow-breathe var(--dot-duration) ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes dotted-glow-breathe {
+  0%, 100% {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: var(--dot-opacity);
+  }
+}
+
+.preview-stage {
+  container-type: size;
+}
+
+.avatar-canvas-shell {
+  width: min(76cqw, 74cqh, 720px);
+  aspect-ratio: 1;
+}
+
+.background-style-mark {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 18px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  background-color: #0b0b0c;
+}
+
+.background-style-relief {
+  background:
+    radial-gradient(circle at 28% 34%, rgba(255, 255, 255, 0.48), transparent 22%),
+    radial-gradient(circle at 68% 62%, rgba(255, 255, 255, 0.2), transparent 30%),
+    conic-gradient(from 24deg at 52% 50%, #111 0 20%, #494949 30%, #171717 48%, #5a5a5a 62%, #101010 80%);
+}
+
+.background-style-dunes {
+  background:
+    linear-gradient(125deg, transparent 18%, rgba(255, 255, 255, 0.45) 27%, rgba(255, 255, 255, 0.08) 38%, transparent 47%),
+    repeating-linear-gradient(154deg, #0d0d0d 0 4px, #515151 5px, #171717 8px);
+}
+
+.background-style-strata {
+  background:
+    radial-gradient(ellipse at 38% 56%, transparent 0 19%, #626262 21% 25%, #171717 28% 37%, #4a4a4a 40% 45%, #0d0d0d 49% 62%, #343434 66% 70%, #0b0b0b 74%);
+}
+
+.background-style-currents {
+  background:
+    radial-gradient(ellipse at 18% 25%, transparent 0 28%, rgba(255,255,255,0.34) 35%, transparent 45%),
+    repeating-linear-gradient(128deg, #0c0c0c 0 5px, #525252 8px, #191919 13px, #343434 17px);
+}
+
+.animation-style-mark {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: currentColor;
+  opacity: 0.76;
+}
+
+.animation-style-field,
+.animation-style-wave {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 3px,
+    currentColor 3px 4px
+  );
+  border-radius: 50%;
+  transform: rotate(-14deg);
+}
+
+.animation-style-wave {
+  transform: rotate(18deg) scaleX(0.82);
+}
+
+.animation-style-orbit {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transform: rotate(-28deg) scaleY(0.55);
+}
+
+.animation-style-orbit::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  content: "";
+  transform: translate(-50%, -50%) scaleY(1.82);
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.animation-style-globe {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background:
+    linear-gradient(90deg, transparent 46%, currentColor 48% 52%, transparent 54%),
+    linear-gradient(transparent 46%, currentColor 48% 52%, transparent 54%);
+}
+
+.animation-style-solve {
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  border: 1px solid currentColor;
+  box-shadow: 4px 4px 0 -2px currentColor, -4px -4px 0 -2px currentColor;
+  transform: rotate(18deg);
+}
+
+.animation-style-pulse {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px transparent, inset 0 0 0 4px currentColor;
+}
+
+.animation-style-pulse::after {
+  position: absolute;
+  inset: 5px;
+  content: "";
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    padding: 0;
+  }
+
+  .studio-shell {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .studio-action {
+    min-height: 2.2rem;
+    padding-inline: 0.45rem;
+    font-size: var(--text-label);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .state-switcher {
+    background: #111111;
+    backdrop-filter: none;
+  }
+}
