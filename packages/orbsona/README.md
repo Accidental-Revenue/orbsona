@@ -104,6 +104,7 @@ Use `parseIdentityJson` at import boundaries. It returns a discriminated result 
 
 - Respects `prefers-reduced-motion`.
 - Caps canvas pixel density at 2x.
+- Uses a compact-density preset below 40 CSS pixels so small avatars remain legible.
 - Pauses work when the avatar or browser tab is not visible.
 - Masks the complete composition to a circular export boundary.
 - Makes `energy` visible across every runtime state while preserving stronger input and output reactions in listening and speaking.

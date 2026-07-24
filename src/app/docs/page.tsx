@@ -132,7 +132,7 @@ export default function DocumentationPage() {
                 <IconPackage size={20} stroke={1.6} aria-hidden="true" />
               </span>
               <div>
-                <p className="text-sm font-medium text-neutral-500">Public npm package · v0.1.0</p>
+                <p className="text-sm font-medium text-neutral-500">Public npm package · v0.1.1</p>
                 <h2 id="install-package" className="font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">Install the renderer</h2>
               </div>
             </div>

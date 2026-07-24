@@ -94,11 +94,11 @@ export function PackageGuide() {
                 rel="noreferrer"
                 className="rounded-full border border-emerald-200/[0.18] bg-emerald-200/[0.06] px-3 py-1.5 text-xs font-medium text-emerald-100/85 transition-colors hover:border-emerald-200/30 hover:bg-emerald-200/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                v0.1.0 · public on npm
+                v0.1.1 · public on npm
               </a>
             </div>
             <p className="mt-5 max-w-3xl text-base leading-7 text-neutral-400">
-              The public package contains the identity contract, TypeScript types, and live React renderer. Every package manager below installs the same v0.1.0 release from npm.
+              The public package contains the identity contract, TypeScript types, and live React renderer. Every package manager below installs the same v0.1.1 release from npm.
             </p>
             <div className="mt-5 inline-flex flex-wrap rounded-xl border border-white/[0.1] bg-black/20 p-1" role="tablist" aria-label="Package manager">
               {packageManagers.map((manager) => (

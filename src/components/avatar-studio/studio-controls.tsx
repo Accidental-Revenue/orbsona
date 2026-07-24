@@ -17,6 +17,7 @@ interface StudioControlsProps {
   error: string;
   onChange: (change: Partial<AvatarIdentity>) => void;
   onRandomize: () => void;
+  onRegenerateSeed: () => void;
 }
 
 export function StudioControls({
@@ -24,6 +25,7 @@ export function StudioControls({
   error,
   onChange,
   onRandomize,
+  onRegenerateSeed,
 }: StudioControlsProps) {
   const nameInvalid = identity.name.trim().length === 0;
 
@@ -133,6 +135,43 @@ export function StudioControls({
           ))}
         </div>
       </fieldset>
+
+      <div className="grid gap-2.5">
+        <label htmlFor="identity-seed" className="text-sm font-medium text-neutral-300">
+          Identity seed
+          <span className="mt-1 block text-xs font-normal leading-5 text-neutral-500">
+            Reproduces the same relief, grain, and motion phase.
+          </span>
+        </label>
+        <div className="grid grid-cols-[minmax(0,1fr)_48px] gap-2">
+          <input
+            id="identity-seed"
+            aria-label="Identity seed"
+            className="studio-input font-mono tabular-nums"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={0xffffffff}
+            step={1}
+            value={identity.seed}
+            onChange={(event) => {
+              const seed = Number(event.target.value);
+              if (Number.isInteger(seed) && seed >= 0 && seed <= 0xffffffff) {
+                onChange({ seed });
+              }
+            }}
+          />
+          <button
+            type="button"
+            aria-label="Generate a new identity seed"
+            title="Generate a new identity seed"
+            onClick={onRegenerateSeed}
+            className="grid h-12 w-12 place-items-center rounded-xl border border-white/[0.12] bg-white/[0.04] text-neutral-300 transition-[border-color,background-color,transform] hover:border-white/25 hover:bg-white/[0.08] hover:text-white active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            <IconRefresh aria-hidden="true" size={17} stroke={1.8} />
+          </button>
+        </div>
+      </div>
 
       <div>
         <button

@@ -26,6 +26,7 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run lint
 npm run test:package
 npm run build
+npm run test:browser
 ```
 
 ## Product surfaces
@@ -37,6 +38,7 @@ npm run build
 - Documentation for the identity file and runtime contract
 - Live component usage as the primary output
 - PNG poster and WebM preview as fallback assets
+- Fixed 512 × 512 PNG export, independent of the selected preview size
 
 ## Runtime model
 
@@ -74,4 +76,6 @@ The renderer uses a bounded 2D canvas pipeline with motion primitives from `thin
 
 Orbsona is released under the [MIT License](LICENSE). The Studio is local-first: it keeps one draft in browser storage and does not require an account, backend, hosted identity library, or analytics service.
 
-The product boundary and rejected alternatives are recorded in [ADR-001](docs/decisions/001-open-source-local-first-package.md).
+The open-source product boundary is recorded in [ADR-001](docs/decisions/001-open-source-local-first-package.md). The launch scope and evidence-gated hosted strategy are recorded in [ADR-002](docs/decisions/002-launch-scope-and-roadmap.md).
+
+Release history is recorded in the [changelog](CHANGELOG.md). The maintained product direction lives in the [roadmap](ROADMAP.md).

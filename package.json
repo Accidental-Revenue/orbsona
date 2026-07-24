@@ -1,6 +1,6 @@
 {
   "name": "orbsona",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "homepage": "https://orbsona.com",
   "repository": {
@@ -16,7 +16,9 @@
     "build": "npm run build -w @accidental-revenue/orbsona && next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "test:package": "npm test -w @accidental-revenue/orbsona"
+    "test:package": "npm test -w @accidental-revenue/orbsona",
+    "test:browser": "playwright test",
+    "test:browser:update": "playwright test tests/browser/avatar-visual.spec.ts --project=chromium --update-snapshots"
   },
   "dependencies": {
     "@fontsource-variable/jost": "^5.3.0",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@playwright/test": "1.61.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

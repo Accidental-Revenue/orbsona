@@ -22,7 +22,7 @@ The app does not imply accounts, a cloud library, hosted persistence, analytics,
 | --- | --- | --- |
 | Studio `/` | Create, preview, import, reset, and export an identity | Pass |
 | Playground `/playground` | Validate eight runtime states and signal energy | Pass |
-| Install `/install` | Package-manager commands and React integration | Pass, public v0.1.0 install flow |
+| Install `/install` | Package-manager commands and React integration | Pass, public v0.1.1 install flow |
 | Documentation `/docs` | Product model, contract, API, boundaries, and license | Pass |
 | Legacy install route `/package` | Redirect to current Install page | Pass |
 | Unknown route | Helpful recovery to Studio | Pass |
@@ -46,17 +46,17 @@ The app does not imply accounts, a cloud library, hosted persistence, analytics,
 
 - JSON export produced a valid `orbsona.identity` version 1 document.
 - Generated React code uses a safe `identity` import identifier even when the agent name contains spaces, digits, emoji, or non-ASCII characters.
-- PNG export produced a valid, non-blank 128 × 128 PNG with transparent pixels outside the circular mask.
+- PNG export produced a valid, non-blank 512 × 512 PNG with transparent pixels outside the circular mask, independent of preview size.
 - WebM export produced a valid non-empty EBML/WebM recording.
 - npm, pnpm, Yarn, and Bun tabs produce the correct command for the same scoped package.
 - Copy actions write the selected command and integration example to the clipboard.
-- `@accidental-revenue/orbsona@0.1.0` installs from the public registry in a clean consumer.
+- `@accidental-revenue/orbsona@0.1.1` installs from the public registry in a clean consumer.
 - The package root and `/react` entry points import successfully from that clean install.
 
 ## Production copy re-audit
 
 - Studio, Playground, Install, and Documentation contain no release-candidate, future-publication, former-name, placeholder, or internal-launch language.
-- Install and Documentation describe v0.1.0 in the present tense and link to the public npm package.
+- Install and Documentation describe v0.1.1 in the present tense and link to the public npm package.
 - The repository README and maintainer publishing guide describe the verified public release.
 - All four package-manager commands point to `@accidental-revenue/orbsona`.
 - Page titles, headings, navigation labels, licensing, local-first boundaries, and provider-neutral claims are consistent across the application.

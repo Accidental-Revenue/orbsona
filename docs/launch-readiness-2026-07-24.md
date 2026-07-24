@@ -1,107 +1,92 @@
 # Orbsona launch readiness
 
 Date: 2026-07-24
-Release: website and `@accidental-revenue/orbsona` v0.1.0
+Release: website and `@accidental-revenue/orbsona` v0.1.1
 
 ## Verdict
 
-The product code, source repository, Vercel application, and npm package are public. `@accidental-revenue/orbsona@0.1.0` was verified directly against the public npm registry and installed in a clean consumer.
+Orbsona is ready for a focused public launch as an open-source presence layer for AI agents. The canonical website is `https://orbsona.com`, the source repository is `https://github.com/Accidental-Revenue/orbsona`, and the package is `@accidental-revenue/orbsona`.
 
-One external launch task remains: `orbsona.com` is attached to Vercel, but its Spaceship DNS records still need to point to the deployment. The product is available now at `https://orbsona.vercel.app`.
+The launch claim is deliberately narrow: Orbsona provides portable visual identities and a live, state-aware React renderer. It does not claim identity uniqueness, authentication, a global registry, cloud persistence, or first-party provider integrations.
 
-The source repository is public at `https://github.com/Accidental-Revenue/orbsona`. The production project belongs to the personal Vercel scope `martinpagac01s-projects` and deploys from that repository's `main` branch.
+## Launch-blocker patch
 
-## Passed checks
+The v0.1.1 patch closes the three renderer risks identified in the final review:
 
-### Brand and naming
+- Small 20–32 pixel avatars use a compact-density preset and remain recognizable.
+- PNG export renders through a dedicated 512 × 512 canvas, independent of preview size and display density.
+- Seed-to-preset derivation is isolated from the Studio catalogs and contract-tested across the complete 120-combination v1 cycle.
 
-- Working source, routes, metadata, exports, identity format, filenames, storage keys, documentation, package name, and package workspace use Orbsona.
-- Canonical URLs, sitemap, robots metadata, Open Graph image, web manifest, and icon use `https://orbsona.com`.
-- The generated identity format is `orbsona.identity`; the portable extension is `.orbsona.json`.
-- No reference to the former product name remains in the working source. The mistakenly published former npm package was unpublished and is no longer installable.
+Studio now exposes the numeric identity seed, persists it with the local browser draft, and lets users deliberately reproduce or regenerate an identity.
 
-### Application
+## Automated evidence
+
+### Application and package
 
 - ESLint: pass
-- TypeScript and optimized Next.js build: pass
-- All application routes prerender as static content.
-- Production route responses: pass
-- Custom 404 and error recovery: pass
-- Real-browser Studio, Playground, Install, and Documentation audit: pass
-- Desktop, compact, mobile, keyboard, reduced-motion, and export testing: pass
-- Browser console errors: none, excluding the intentionally requested 404 during not-found testing
+- Optimized Next.js build: pass
+- Package build and contract tests: pass
+- Compact-rendering launch regression tests: pass
+- Production dependency audit: zero vulnerabilities
+- Package dry run contains only the intended distributable files
 
-### Package
+### Browser journeys
 
-- Package contract smoke test: pass
-- Clean React 18 tarball consumer install and import: pass
-- Root and `/react` exports: pass
-- `publint`: pass with no package-structure errors
-- Package artifact: 19 intended files
-- Packed size: approximately 21 KB compressed and 97 KB unpacked
-- Artifact contains only `LICENSE`, `README.md`, `package.json`, and `dist`
-- Public registry package: `@accidental-revenue/orbsona@0.1.0`
-- Authenticated npm account: recognized
-- npm, pnpm, Yarn, and Bun resolve the same public npm-registry artifact
+The launch-critical flow passes in Chromium, Firefox, and WebKit:
 
-The package is intentionally ESM-only. Modern Node ESM and bundler resolution pass; CommonJS consumers must use dynamic `import()`, and Node 10 subpath resolution is not supported. This matches the documented package boundary.
+- edit and persist the identity seed;
+- render the Studio identity;
+- export a non-blank 512 × 512 PNG;
+- download and parse the portable `.orbsona.json` identity;
+- download WebM where the browser supports recording, or show an explicit support message.
+
+Canonical Chromium visual baselines cover 32, 64, and 256 pixel idle avatars. GitHub Actions runs lint, package tests, the production build, and critical Chromium journeys on every pull request and push to `main`.
 
 ### Security and privacy
 
-- Production dependency audit: zero vulnerabilities
-- No environment or credential files found in the release tree
-- No account, backend, cloud identity store, telemetry, analytics, or remote identity upload
-- Identity files are size-limited and validated before import
-- Production headers include HSTS, MIME sniffing protection, frame denial, strict referrer policy, restricted browser permissions, cross-origin opener isolation, and a restrictive same-origin Content Security Policy
-- Framework disclosure header is disabled
+- No account, backend, hosted identity store, remote upload, telemetry, or analytics
+- Browser draft stored only in local storage
+- Identity files validated and size-limited at import
+- Bounded canvas pixel density and offscreen/hidden rendering pause
+- Restrictive production security headers and no framework disclosure header
 
-### Performance
+## Public product boundary
 
-- No long tasks during the measured live Studio animation
-- Stable approximately 60 Hz browser presentation with a 17.7 ms p95 frame interval
-- Renderer work pauses when hidden or offscreen
-- Canvas pixel density is bounded
+The identity JSON is the source of truth. The React renderer turns it into live semantic states. PNG and WebM are fallback assets for places that cannot run the component.
 
-## Release status
+The current release includes:
 
-### Completed: public npm release
+- four relief-style backgrounds;
+- two optional background effects;
+- five palettes;
+- six motion presets;
+- eight semantic runtime states;
+- deterministic numeric seeds;
+- local import, reset, and autosave;
+- npm, pnpm, Yarn, and Bun installation from the same npm artifact.
 
-`@accidental-revenue/orbsona@0.1.0` is public. Registry metadata, a clean install, the root export, and the React export are verified. Website, repository, and package documentation use present-tense public-release copy.
-
-### Completed: public source and Git deployment
-
-The clean public root history is pushed to `Accidental-Revenue/orbsona`. Vercel is connected to that exact repository and deploys production from `main`. Package metadata includes repository and issue URLs.
-
-### Remaining: finish Spaceship DNS
-
-`orbsona.com` and `www.orbsona.com` are attached to the personal Vercel project. Apply Vercel's current recommended records in Spaceship, verify DNS and TLS, and then exercise the production domain:
-
-- `/`
-- `/playground`
-- `/install`
-- `/docs`
-- `/robots.txt`
-- `/sitemap.xml`
-- `/opengraph-image`
-
-Confirm canonical and social metadata resolve to the final HTTPS origin.
-
-## Recommended immediately after launch
-
-- Add browser workflow tests to CI for create/import/reset/PNG/JSON and page navigation.
-- Add npm trusted publishing with provenance.
-- Add a short changelog and release tags beginning with v0.1.0.
-- Keep the local archive branch private; the public repository intentionally starts from a clean Orbsona launch snapshot.
-
-## Launch command checklist
+## Release procedure
 
 ```bash
 npm run lint
 npm run test:package
 npm run build
+npm run test:browser
 npm audit --omit=dev --audit-level=high
 npm pack --dry-run --workspace @accidental-revenue/orbsona
 npm view @accidental-revenue/orbsona version
 ```
 
-All commands pass for the public v0.1.0 release.
+After publication, verify `https://orbsona.com`, `/playground`, `/install`, `/docs`, the public npm version, and a clean consumer install.
+
+## Accepted post-launch work
+
+The following are roadmap items, not launch blockers:
+
+- expand visual variety without weakening compact-size legibility;
+- improve framework integration examples and runtime adapters;
+- add shareable identity links only when the privacy and permanence model is explicit;
+- explore opt-in provenance or a registry without making uniqueness claims the renderer cannot enforce;
+- add paid hosted coordination only after open-source adoption demonstrates demand.
+
+The prioritized roadmap is maintained in `ROADMAP.md`.

@@ -1,6 +1,6 @@
 # npm publishing guide
 
-Orbsona is published as the public package [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona) under the [`accidental-revenue`](https://www.npmjs.com/org/accidental-revenue) npm organization. The first public release is `0.1.0`.
+Orbsona is published as the public package [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona) under the [`accidental-revenue`](https://www.npmjs.com/org/accidental-revenue) npm organization. The current public release is `0.1.1`.
 
 ## Ownership and package names
 
@@ -59,7 +59,7 @@ npm init -y
 npm install @accidental-revenue/orbsona
 ```
 
-The current public Orbsona release is `0.1.0`.
+The current public Orbsona release is `0.1.1`.
 
 The same npm-registry release works with other JavaScript package managers:
 

@@ -26,9 +26,12 @@ import {
 } from "@/lib/identity-draft";
 import { UseIdentityDialog } from "./use-identity-dialog";
 import { NewDraftDialog } from "./new-draft-dialog";
+import { AvatarOrb } from "@/components/orb/avatar-orb";
 
 const RECORDING_DURATION_MS = 4_000;
 const MAX_IDENTITY_FILE_BYTES = 128 * 1024;
+const PNG_EXPORT_SIZE = 512;
+const PNG_EXPORT_READY_FRAME_LIMIT = 30;
 type StorageStatus = "example" | "saving" | "saved" | "unavailable";
 
 function safeFilename(name: string) {
@@ -57,6 +60,7 @@ export function AvatarStudio() {
   const [error, setError] = useState("");
   const [previewSize, setPreviewSize] = useState<PreviewSize>(128);
   const [isRecording, setIsRecording] = useState(false);
+  const [isPreparingPng, setIsPreparingPng] = useState(false);
   const [isUseDialogOpen, setIsUseDialogOpen] = useState(false);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
   const [storageStatus, setStorageStatus] = useState<StorageStatus>("example");
@@ -65,6 +69,7 @@ export function AvatarStudio() {
   const recordingRef = useRef<{ recorder: MediaRecorder; stream: MediaStream } | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
   const previewCanvasRootRef = useRef<HTMLDivElement>(null);
+  const pngCanvasRootRef = useRef<HTMLDivElement>(null);
   const hydratedRef = useRef(false);
   const draftDirtyRef = useRef(false);
 
@@ -101,6 +106,55 @@ export function AvatarStudio() {
     return () => window.clearTimeout(saveTimer);
   }, [identity]);
 
+  useEffect(() => {
+    if (!isPreparingPng) return;
+
+    let frame = 0;
+    let attempts = 0;
+    const finish = (message?: string) => {
+      setIsPreparingPng(false);
+      if (message) setError(message);
+    };
+
+    const exportWhenReady = () => {
+      const source = pngCanvasRootRef.current?.querySelector<HTMLCanvasElement>(
+        "[data-avatar-canvas] canvas",
+      );
+      if (!source || source.dataset.avatarReady !== "true") {
+        attempts += 1;
+        if (attempts >= PNG_EXPORT_READY_FRAME_LIMIT) {
+          finish("The export renderer did not become ready. Try the PNG download again.");
+          return;
+        }
+        frame = window.requestAnimationFrame(exportWhenReady);
+        return;
+      }
+
+      const output = document.createElement("canvas");
+      output.width = PNG_EXPORT_SIZE;
+      output.height = PNG_EXPORT_SIZE;
+      const context = output.getContext("2d");
+      if (!context) {
+        finish("The PNG image could not be created in this browser.");
+        return;
+      }
+      context.clearRect(0, 0, PNG_EXPORT_SIZE, PNG_EXPORT_SIZE);
+      context.drawImage(source, 0, 0, PNG_EXPORT_SIZE, PNG_EXPORT_SIZE);
+      output.toBlob((blob) => {
+        if (!blob) {
+          finish("The PNG image could not be created. Try the export again.");
+          return;
+        }
+        setError("");
+        downloadBlob(blob, `${safeFilename(identity.name)}.png`);
+        finish();
+      }, "image/png");
+    };
+
+    frame = window.requestAnimationFrame(exportWhenReady);
+    return () => window.cancelAnimationFrame(frame);
+  }, [identity, isPreparingPng]);
+
   function updateIdentity(change: Partial<AvatarIdentity>) {
     draftDirtyRef.current = true;
     setStorageStatus("saving");
@@ -125,6 +179,10 @@ export function AvatarStudio() {
     setAgentState("success");
     window.clearTimeout(stateTimerRef.current);
     stateTimerRef.current = window.setTimeout(() => setAgentState("idle"), 1_100);
+  }
+
+  function regenerateSeed() {
+    updateIdentity({ seed: createRandomSeed() });
   }
 
   async function importIdentity(event: React.ChangeEvent<HTMLInputElement>) {
@@ -163,19 +221,12 @@ export function AvatarStudio() {
   }
 
   function exportPng() {
-    const canvas = previewCanvasRootRef.current?.querySelector<HTMLCanvasElement>("[data-avatar-canvas] canvas");
-    if (!canvas || canvas.width <= 1 || canvas.height <= 1) {
-      setError("The live preview is not ready yet. Try the export again in a moment.");
+    if (!identity.name.trim()) {
+      setError("Enter an agent name before downloading the PNG image.");
       return;
     }
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        setError("The PNG image could not be created. Try the export again.");
-        return;
-      }
-      setError("");
-      downloadBlob(blob, `${safeFilename(identity.name)}.png`);
-    }, "image/png");
+    setError("");
+    setIsPreparingPng(true);
   }
 
   async function exportWebm() {
@@ -316,6 +367,7 @@ export function AvatarStudio() {
             error={error}
             onChange={updateIdentity}
             onRandomize={randomizeAppearance}
+            onRegenerateSeed={regenerateSeed}
           />
 
           <div className="my-5 h-px bg-white/[0.1] max-xl:my-3" />
@@ -334,8 +386,8 @@ export function AvatarStudio() {
             <button type="button" onClick={exportWebm} disabled={isRecording} className="studio-action disabled:cursor-wait disabled:opacity-50">
               <IconVideo size={15} aria-hidden="true" /> {isRecording ? "Recording…" : "WebM clip"}
             </button>
-            <button type="button" onClick={exportPng} className="studio-action">
-              <IconDownload size={15} aria-hidden="true" /> PNG image
+            <button type="button" onClick={exportPng} disabled={isPreparingPng} className="studio-action disabled:cursor-wait disabled:opacity-50">
+              <IconDownload size={15} aria-hidden="true" /> {isPreparingPng ? "Preparing…" : "PNG image"}
             </button>
           </div>
           <p className="sr-only" aria-live="polite">
@@ -343,6 +395,23 @@ export function AvatarStudio() {
           </p>
         </div>
       </aside>
+      {isPreparingPng && (
+        <div
+          ref={pngCanvasRootRef}
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: -1,
+            width: PNG_EXPORT_SIZE,
+            height: PNG_EXPORT_SIZE,
+            opacity: 0,
+            pointerEvents: "none",
+          }}
+        >
+          <AvatarOrb identity={identity} state="idle" className="h-full w-full" />
+        </div>
+      )}
       <UseIdentityDialog
         identity={identity}
         open={isUseDialogOpen}

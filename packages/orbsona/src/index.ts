@@ -82,6 +82,13 @@ export const animations: Array<{
   { id: "pulse", name: "Pulse", description: "Concentric signal rings", badge: "New" },
 ];
 
+// Seed derivation is a published v1 contract. These lists are deliberately
+// independent from the Studio catalogs: changing a Studio menu must never
+// remap an identity that was already generated from a seed.
+const V1_SEED_BACKGROUNDS = ["relief", "dunes", "strata", "currents"] as const;
+const V1_SEED_ANIMATIONS = ["field", "orbit", "globe", "wave", "solve", "pulse"] as const;
+const V1_SEED_PALETTES = ["ion", "moss", "ember", "mineral", "mono"] as const;
+
 export const states: Array<{
   id: Exclude<AgentState, "connecting" | "error">;
   label: string;
@@ -205,12 +212,27 @@ export function identityFromSeed(
   seed: number,
 ): Pick<AvatarIdentity, "background" | "animation" | "palette" | "seed"> {
   const normalizedSeed = seed >>> 0;
+  const background = V1_SEED_BACKGROUNDS[normalizedSeed % V1_SEED_BACKGROUNDS.length];
+  const animation = V1_SEED_ANIMATIONS[
+    Math.floor(normalizedSeed / V1_SEED_BACKGROUNDS.length) % V1_SEED_ANIMATIONS.length
+  ];
+  const paletteId = V1_SEED_PALETTES[
+    Math.floor(
+      normalizedSeed / (V1_SEED_BACKGROUNDS.length * V1_SEED_ANIMATIONS.length),
+    ) % V1_SEED_PALETTES.length
+  ];
+  const palette = palettes.find(({ id }) => id === paletteId);
+  if (!palette) {
+    throw new Error(`Orbsona v1 palette "${paletteId}" is missing from the catalog.`);
+  }
+
   return {
     seed: normalizedSeed,
-    background: backgrounds[normalizedSeed % backgrounds.length].id,
-    animation: animations[Math.floor(normalizedSeed / backgrounds.length) % animations.length].id,
-    palette: palettes[
-      Math.floor(normalizedSeed / (backgrounds.length * animations.length)) % palettes.length
-    ],
+    background,
+    animation,
+    palette: {
+      ...palette,
+      colors: [...palette.colors],
+    },
   };
 }

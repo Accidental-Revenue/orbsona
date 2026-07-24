@@ -1,9 +1,9 @@
 "use client";
 
-import { MODE_DRAWS, resolvePreset, type ModeKey, type OrbState } from "thinking-orbs";
+import { MODE_DRAWS } from "thinking-orbs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import type { AgentState, AvatarAnimation, AvatarIdentity } from "./index.js";
+import type { AgentState, AvatarIdentity } from "./index.js";
 import { ORB_RADIUS_RATIO, paintOrbBackground, paintOrbEdge } from "./orb-backgrounds.js";
 import {
   createMotionRuntime,
@@ -11,6 +11,7 @@ import {
   drawStateOverlay,
   updateMotion,
 } from "./orb-motion.js";
+import { resolveAnimationPreset } from "./orb-presets.js";
 
 export interface AgentAvatarProps {
   identity: AvatarIdentity;
@@ -22,16 +23,6 @@ export interface AgentAvatarProps {
   inputLevel?: number;
   outputLevel?: number;
 }
-
-type BuiltInAnimation = Exclude<AvatarAnimation, "pulse">;
-
-const animationPreset: Record<BuiltInAnimation, OrbState> = {
-  field: "composing",
-  orbit: "working",
-  globe: "searching",
-  wave: "listening",
-  solve: "solving",
-};
 
 function tintParticles(
   context: CanvasRenderingContext2D,
@@ -113,15 +104,6 @@ export function AgentAvatar({
     rotateBackground,
     seed,
   ]);
-  const renderConfig = useMemo(() => {
-    if (identity.animation === "pulse") {
-      return { mode: "pulse" as const, speed: 1, opts: {} };
-    }
-    const presetState = animationPreset[identity.animation];
-    const preset = resolvePreset(presetState, 64);
-    return { mode: preset.mode as ModeKey, speed: preset.speed, opts: preset.opts };
-  }, [identity.animation]);
-
   useEffect(() => {
     inputLevelRef.current = inputLevel ?? energy;
     outputLevelRef.current = outputLevel ?? energy;
@@ -145,11 +127,14 @@ export function AgentAvatar({
     let cssSize = 1;
     let dpr = 1;
     let lastTimestamp = 0;
+    let renderConfig = resolveAnimationPreset(stableIdentity.animation, 64);
     const frameInterval = 1_000 / (state === "idle" ? 24 : 30);
 
     const resize = () => {
       const bounds = canvas.getBoundingClientRect();
       cssSize = Math.max(1, Math.min(bounds.width, bounds.height));
+      renderConfig = resolveAnimationPreset(stableIdentity.animation, cssSize);
+      delete canvas.dataset.avatarReady;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       const pixels = Math.max(1, Math.round(cssSize * dpr));
       canvas.width = pixels;
@@ -246,6 +231,8 @@ export function AgentAvatar({
       context.fillStyle = "#fff";
       context.fill();
       context.restore();
+      canvas.dataset.avatarReady = "true";
+      canvas.dataset.avatarPresetSize = String(renderConfig.presetSize);
 
       if (!reduceMotion && visible && document.visibilityState === "visible") {
         frame = requestAnimationFrame(draw);
@@ -281,7 +268,7 @@ export function AgentAvatar({
       visibilityObserver.disconnect();
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [reduceMotion, renderConfig, stableIdentity, state]);
+  }, [reduceMotion, stableIdentity, state]);
 
   return (
     <div

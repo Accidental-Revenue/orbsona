@@ -1,6 +1,6 @@
 {
   "name": "@accidental-revenue/orbsona",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Living, state-aware visual identities for AI agents",
   "type": "module",
   "sideEffects": false,
@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run build && node scripts/contract-smoke.mjs",
+    "test": "npm run build && node scripts/contract-smoke.mjs && node scripts/launch-regression.mjs",
     "prepack": "npm run test"
   },
   "keywords": [
