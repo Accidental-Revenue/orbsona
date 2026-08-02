@@ -25,6 +25,26 @@ test("install and documentation advertise the published patch", async ({ page })
   await expect(page.getByText("Public npm package · v0.2.0")).toBeVisible();
 });
 
+test("documentation offers a package-manager picker with quick copy", async ({
+  page,
+  context,
+  browserName,
+}) => {
+  test.skip(browserName !== "chromium", "Clipboard permissions are verified in Chromium.");
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/docs");
+
+  const managerButton = page.getByRole("button", { name: "Package manager: npm" });
+  await managerButton.click();
+  await page.getByRole("option", { name: "pnpm", exact: true }).click();
+
+  const command = "pnpm add @accidental-revenue/orbsona";
+  await expect(page.getByText(command, { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Copy install command" }).click();
+  await expect(page.getByRole("button", { name: "Install command copied" })).toBeVisible();
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command);
+});
+
 test("the legacy package route resolves to install", async ({ page }) => {
   await page.goto("/package");
   await expect(page).toHaveURL(/\/install$/);

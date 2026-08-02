@@ -8,15 +8,7 @@ import {
   IconPackage,
 } from "@tabler/icons-react";
 import { useState } from "react";
-
-type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
-
-const packageManagers: Array<{ id: PackageManager; label: string; command: string }> = [
-  { id: "npm", label: "npm", command: "npm install @accidental-revenue/orbsona" },
-  { id: "pnpm", label: "pnpm", command: "pnpm add @accidental-revenue/orbsona" },
-  { id: "yarn", label: "Yarn", command: "yarn add @accidental-revenue/orbsona" },
-  { id: "bun", label: "Bun", command: "bun add @accidental-revenue/orbsona" },
-];
+import { InstallCommand } from "@/components/package/install-command";
 
 const componentExample = `import { AgentAvatar } from "@accidental-revenue/orbsona/react";
 import type { AgentState } from "@accidental-revenue/orbsona";
@@ -49,13 +41,10 @@ npm run test:package
 npm run dev`;
 
 export function PackageGuide() {
-  const [packageManager, setPackageManager] = useState<PackageManager>("npm");
-  const [copied, setCopied] = useState<"install" | "component" | "local" | null>(null);
+  const [copied, setCopied] = useState<"component" | "local" | null>(null);
   const [copyError, setCopyError] = useState("");
-  const installCommand = packageManagers.find((manager) => manager.id === packageManager)?.command
-    ?? packageManagers[0].command;
 
-  async function copy(value: string, target: "install" | "component" | "local") {
+  async function copy(value: string, target: "component" | "local") {
     try {
       await navigator.clipboard.writeText(value);
       setCopyError("");
@@ -100,29 +89,7 @@ export function PackageGuide() {
             <p className="mt-5 max-w-3xl text-base leading-7 text-neutral-400">
               The public package contains the v2 identity contract, TypeScript types, and original Living Topographies renderer. Every package manager below installs the same v0.2.0 release from npm.
             </p>
-            <div className="mt-5 inline-flex flex-wrap rounded-xl border border-white/[0.1] bg-black/20 p-1" role="tablist" aria-label="Package manager">
-              {packageManagers.map((manager) => (
-                <button
-                  key={manager.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={packageManager === manager.id}
-                  onClick={() => setPackageManager(manager.id)}
-                  className={`h-9 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                    packageManager === manager.id
-                      ? "bg-white text-neutral-950"
-                      : "text-neutral-500 hover:bg-white/[0.05] hover:text-neutral-200"
-                  }`}
-                >
-                  {manager.label}
-                </button>
-              ))}
-            </div>
-            <CodeRow
-              value={installCommand}
-              copied={copied === "install"}
-              onCopy={() => copy(installCommand, "install")}
-            />
+            <InstallCommand className="mt-5" />
           </div>
 
           <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5 sm:p-6">
@@ -217,23 +184,6 @@ function Fact({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between gap-4">
       <dt className="text-neutral-500">{label}</dt>
       <dd className="font-medium text-neutral-300">{value}</dd>
-    </div>
-  );
-}
-
-function CodeRow({
-  value,
-  copied,
-  onCopy,
-}: {
-  value: string;
-  copied: boolean;
-  onCopy: () => void;
-}) {
-  return (
-    <div className="mt-5 flex items-center justify-between gap-3 rounded-xl border border-white/[0.1] bg-black/25 px-4 py-3">
-      <code className="truncate font-mono text-sm text-neutral-300">{value}</code>
-      <CopyButton copied={copied} label="Copy" onClick={onCopy} />
     </div>
   );
 }
