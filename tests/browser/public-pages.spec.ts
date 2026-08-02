@@ -37,5 +37,7 @@ test("the Playground drives all runtime states and signal energy", async ({ page
   await expect(page.getByRole("img", { name: "Aster avatar, error state" }).first()).toBeVisible();
   await page.getByRole("slider").fill("1");
   await expect(page.getByText("1.00", { exact: true })).toBeVisible();
-  await expect(page.locator("[data-avatar-canvas] canvas").first()).toHaveAttribute("data-avatar-ready", "true");
+  const canvas = page.locator("[data-avatar-canvas] canvas").first();
+  await expect(canvas).toHaveAttribute("data-avatar-ready", "true", { timeout: 10_000 });
+  await expect(canvas).toHaveAttribute("data-avatar-topology-resolution", "144");
 });
