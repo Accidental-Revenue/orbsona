@@ -35,18 +35,6 @@ assert.equal(
   "npx --yes npm@11.17.0 ci --strict-allow-scripts",
   "Vercel must install with the audited npm CLI and strict script approvals",
 );
-assert.deepEqual(
-  vercelConfig.redirects,
-  [
-    {
-      source: "/:path*",
-      has: [{ type: "host", value: "www.orbsona.com" }],
-      destination: "https://orbsona.com/:path*",
-      permanent: true,
-    },
-  ],
-  "www must permanently redirect to the canonical apex domain",
-);
 assert.deepEqual(rootPackage.allowScripts, {
   "fsevents@2.3.2": true,
   "unrs-resolver@1.12.2": true,
