@@ -1,12 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npx --yes npm@11.17.0 ci --strict-allow-scripts",
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.orbsona.com" }],
-      "destination": "https://orbsona.com/:path*",
-      "permanent": true
-    }
-  ]
+  "installCommand": "npx --yes npm@11.17.0 ci --strict-allow-scripts"
 }

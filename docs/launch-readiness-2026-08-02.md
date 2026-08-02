@@ -76,3 +76,5 @@ Covered journeys include:
 5. Merge/deploy the website only after the package is live, then verify `https://orbsona.com`, the custom-domain redirect, public headers, and install command against production.
 
 This order prevents the v2 Studio and documentation from being public while npm still serves the v1 renderer.
+
+The canonical host redirect is an external Vercel project-domain setting: `www.orbsona.com` targets `orbsona.com` with status 308. It must be verified against the live domain after every domain migration; an application redirect in `vercel.json` does not replace that custom-domain setting.
