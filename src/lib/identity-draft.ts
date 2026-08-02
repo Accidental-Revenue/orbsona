@@ -2,6 +2,8 @@ import {
   type AvatarIdentity,
   initialIdentity,
   isAvatarIdentity,
+  isLegacyAvatarIdentityV1,
+  migrateLegacyIdentityV1,
 } from "@accidental-revenue/orbsona";
 
 export const IDENTITY_DRAFT_EVENT = "orbsona:identity-draft-change";
@@ -17,7 +19,13 @@ export function readIdentityDraft(): AvatarIdentity | null {
     const stored = window.localStorage.getItem(IDENTITY_DRAFT_KEY);
     if (!stored) return null;
     const value = JSON.parse(stored) as unknown;
-    return isAvatarIdentity(value) ? value : null;
+    if (isAvatarIdentity(value)) return value;
+    if (isLegacyAvatarIdentityV1(value)) {
+      const migrated = migrateLegacyIdentityV1(value);
+      window.localStorage.setItem(IDENTITY_DRAFT_KEY, JSON.stringify(migrated));
+      return migrated;
+    }
+    return null;
   } catch {
     return null;
   }

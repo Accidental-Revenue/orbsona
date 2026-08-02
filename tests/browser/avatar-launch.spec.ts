@@ -54,12 +54,99 @@ test("round-trips the portable identity document", async ({ page }) => {
 
   expect(payload).toMatchObject({
     format: "orbsona.identity",
-    version: 1,
+    version: 2,
     identity: {
       name: "Aster",
+      morphology: "basin",
+      material: "mineral",
       seed: 2718,
     },
   });
+  expect(payload.identity).not.toHaveProperty("background");
+  expect(payload.identity).not.toHaveProperty("animation");
+});
+
+test("migrates a version 1 identity file into the v2 editor", async ({ page }) => {
+  const chooserPromise = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Import" }).click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: "legacy.orbsona.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({
+      format: "orbsona.identity",
+      version: 1,
+      identity: {
+        name: "Legacy",
+        background: "currents",
+        animation: "wave",
+        palette: { id: "moss", name: "Moss", colors: ["#92d6b0", "#235848", "#e5fff0"] },
+        seed: 91,
+      },
+    })),
+  });
+
+  await expect(page.getByRole("textbox", { name: "Agent name" })).toHaveValue("Legacy");
+  await expect(page.getByRole("button", { name: "Current" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Glass" })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("every morphology and material produces a distinct rendered identity", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const canvas = page.locator("[data-studio-avatar] canvas");
+  const signature = () => canvas.evaluate((element) => (element as HTMLCanvasElement).toDataURL());
+  const morphologySignatures = new Set<string>();
+  for (const name of ["Basin", "Ridge", "Archipelago", "Fault", "Cellular", "Pleat", "Current", "Chorus"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await page.waitForTimeout(80);
+    await expect(canvas).toHaveAttribute("data-avatar-ready", "true");
+    morphologySignatures.add(await signature());
+  }
+  expect(morphologySignatures.size).toBe(8);
+
+  const materialSignatures = new Set<string>();
+  for (const name of ["Mineral", "Glass", "Ink", "Frost"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await page.waitForTimeout(80);
+    await expect(canvas).toHaveAttribute("data-avatar-ready", "true");
+    materialSignatures.add(await signature());
+  }
+  expect(materialSignatures.size).toBe(4);
+});
+
+test("keeps the default live topology inside its frame budget", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "Long-task timing is standardized in Chromium for this gate.");
+  const canvas = page.locator("[data-studio-avatar] canvas");
+  await expect(canvas).toHaveAttribute("data-avatar-topology-resolution", "112");
+  const result = await page.evaluate(async () => {
+    const durations: number[] = [];
+    const observer = "PerformanceObserver" in window
+      ? new PerformanceObserver((list) => {
+          durations.push(...list.getEntries().map((entry) => entry.duration));
+        })
+      : null;
+    observer?.observe({ type: "longtask", buffered: false });
+    const intervals: number[] = [];
+    await new Promise<void>((resolve) => {
+      let previous = performance.now();
+      const sample = (now: number) => {
+        intervals.push(now - previous);
+        previous = now;
+        if (intervals.length < 90) requestAnimationFrame(sample);
+        else resolve();
+      };
+      requestAnimationFrame(sample);
+    });
+    observer?.disconnect();
+    const stable = intervals.slice(10);
+    return {
+      averageFrame: stable.reduce((total, value) => total + value, 0) / stable.length,
+      longestTask: Math.max(0, ...durations),
+    };
+  });
+
+  expect(result.averageFrame).toBeLessThan(22);
+  expect(result.longestTask).toBeLessThan(80);
 });
 
 test("records WebM or explains browser support", async ({ page }) => {

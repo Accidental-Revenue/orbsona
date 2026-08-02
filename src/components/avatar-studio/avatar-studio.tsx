@@ -165,8 +165,8 @@ export function AvatarStudio() {
   function randomizeAppearance() {
     let randomized = identityFromSeed(createRandomSeed());
     for (let attempt = 0; attempt < 7; attempt += 1) {
-      const hasChanged = randomized.background !== identity.background
-        || randomized.animation !== identity.animation
+      const hasChanged = randomized.morphology !== identity.morphology
+        || randomized.material !== identity.material
         || randomized.palette.id !== identity.palette.id;
       if (hasChanged) break;
       randomized = identityFromSeed(createRandomSeed());

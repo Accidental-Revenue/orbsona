@@ -1,6 +1,6 @@
 {
   "name": "@accidental-revenue/orbsona",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Living, state-aware visual identities for AI agents",
   "type": "module",
   "sideEffects": false,
@@ -24,9 +24,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run build && node scripts/contract-smoke.mjs && node scripts/launch-regression.mjs",
+    "test": "npm run build && node scripts/contract-smoke.mjs && node scripts/v2-contract.mjs && node scripts/topology-engine.mjs && node scripts/launch-regression.mjs",
     "prepack": "npm run test"
   },
   "keywords": [
@@ -53,9 +54,6 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "thinking-orbs": "0.1.1"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

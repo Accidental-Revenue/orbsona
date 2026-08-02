@@ -40,4 +40,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Test launch-critical browser journeys
-        run: npx playwright test tests/browser/avatar-launch.spec.ts tests/browser/public-pages.spec.ts --project=chromium
+        run: npx playwright test tests/browser/avatar-launch.spec.ts tests/browser/public-pages.spec.ts tests/browser/accessibility.spec.ts --project=chromium

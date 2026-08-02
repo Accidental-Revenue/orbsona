@@ -79,13 +79,11 @@ An Orbsona identity is a portable, versioned JSON document:
 ```json
 {
   "format": "orbsona.identity",
-  "version": 1,
+  "version": 2,
   "identity": {
     "name": "Aster",
-    "background": "relief",
-    "rotateBackground": false,
-    "grain": false,
-    "animation": "field",
+    "morphology": "basin",
+    "material": "mineral",
     "palette": {
       "id": "ion",
       "name": "Ion",
@@ -98,19 +96,19 @@ An Orbsona identity is a portable, versioned JSON document:
 
 Use `parseIdentityJson` at import boundaries. It returns a discriminated result instead of throwing for invalid files. PNG and WebM are fallback assets; the identity document is the source of truth for live runtimes.
 
-`rotateBackground` enables a slow circular relief rotation. `grain` adds a deterministic granular finish without adding per-frame noise work. Both fields are optional and default to `false` when omitted.
+Version 2 separates shape from surface. `morphology` selects one of eight original terrain generators. `material` selects Mineral, Glass, Ink, or Frost shading. Version 1 files remain importable and are migrated to the closest v2 combination by `parseIdentityJson`.
 
 ## Rendering behavior
 
 - Respects `prefers-reduced-motion`.
 - Caps canvas pixel density at 2x.
-- Uses a compact-density preset below 40 CSS pixels so small avatars remain legible.
+- Uses bounded topology resolutions tuned for legibility from 20 to 512 CSS pixels.
 - Pauses work when the avatar or browser tab is not visible.
 - Masks the complete composition to a circular export boundary.
-- Makes `energy` visible across every runtime state while preserving stronger input and output reactions in listening and speaking.
+- Deforms the same topology for every runtime state. Listening gathers, thinking divides, speaking sends pressure, working creates flow, success aligns, and error fractures.
 - Exposes a semantic `role="img"` label containing identity and state.
 
-The motion primitives are built on the MIT-licensed [`thinking-orbs`](https://github.com/Jakubantalik/thinking-orbs) package by Jakub Antalik.
+The topology generation, material renderer, state grammar, and seed mapping are implemented in Orbsona. The runtime has no visual-preset dependency.
 
 ## Local development
 
