@@ -34,10 +34,11 @@ test("the legacy package route resolves to install", async ({ page }) => {
 test("the Playground drives all runtime states and signal energy", async ({ page }) => {
   await page.goto("/playground");
   await page.getByRole("button", { name: "Error", exact: true }).click();
-  await expect(page.getByRole("img", { name: "Aster avatar, error state" }).first()).toBeVisible();
+  const runtimeAvatar = page.getByRole("img", { name: "Aster avatar, error state" });
+  await expect(runtimeAvatar).toBeVisible();
   await page.getByRole("slider").fill("1");
   await expect(page.getByText("1.00", { exact: true })).toBeVisible();
-  const canvas = page.locator("[data-avatar-canvas] canvas").first();
+  const canvas = runtimeAvatar.locator("canvas");
   await expect(canvas).toHaveAttribute("data-avatar-ready", "true", { timeout: 10_000 });
   await expect(canvas).toHaveAttribute("data-avatar-topology-resolution", "144");
 });
