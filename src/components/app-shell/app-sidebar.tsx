@@ -40,7 +40,7 @@ function CurrentIdentity({ identity }: { identity: AvatarIdentity }) {
       <div className="min-w-0">
         <p className="truncate text-base font-medium text-neutral-100">{identity.name || "Untitled avatar"}</p>
         <p className="truncate text-sm capitalize text-neutral-500">
-          {identity.background} / {identity.animation}
+          {identity.morphology} / {identity.material}
         </p>
       </div>
     </div>

@@ -181,28 +181,6 @@ button {
   background-size: 4px 4px;
 }
 
-.preview-dots {
-  z-index: 1;
-  mask-image: radial-gradient(circle at center, black 8%, rgba(0, 0, 0, 0.94) 48%, transparent 88%);
-}
-
-.dotted-glow-layer {
-  --dot-opacity: 0.24;
-  --dot-duration: 9s;
-  opacity: 0.08;
-  animation: dotted-glow-breathe var(--dot-duration) ease-in-out infinite;
-  will-change: opacity;
-}
-
-@keyframes dotted-glow-breathe {
-  0%, 100% {
-    opacity: 0.06;
-  }
-  50% {
-    opacity: var(--dot-opacity);
-  }
-}
-
 .preview-stage {
   container-type: size;
 }
@@ -212,8 +190,57 @@ button {
   aspect-ratio: 1;
 }
 
-.background-style-mark {
+.morphology-mark {
   position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  background-color: #0b0b0c;
+}
+
+.morphology-basin {
+  background: radial-gradient(circle at 42% 42%, #0b0b0c 0 18%, #6a6a6a 21%, #202020 38%, #474747 52%, #0b0b0c 76%);
+}
+
+.morphology-ridge,
+.morphology-pleat,
+.morphology-current {
+  background: repeating-linear-gradient(148deg, #111 0 3px, #666 4px, #181818 7px);
+}
+
+.morphology-archipelago,
+.morphology-chorus {
+  background:
+    radial-gradient(circle at 31% 35%, #777 0 8%, transparent 10%),
+    radial-gradient(circle at 68% 39%, #505050 0 12%, transparent 14%),
+    radial-gradient(circle at 48% 70%, #777 0 10%, transparent 12%),
+    #101010;
+}
+
+.morphology-fault {
+  background: linear-gradient(122deg, #4e4e4e 0 44%, #0b0b0c 45% 54%, #707070 55% 100%);
+}
+
+.morphology-cellular {
+  background:
+    radial-gradient(circle at 35% 35%, transparent 0 20%, #686868 22% 27%, transparent 29%),
+    radial-gradient(circle at 70% 65%, transparent 0 16%, #4d4d4d 18% 23%, transparent 25%),
+    #111;
+}
+
+.morphology-pleat {
+  background: repeating-linear-gradient(90deg, #111 0 3px, #6a6a6a 5px, #202020 9px);
+}
+
+.morphology-current {
+  background: repeating-linear-gradient(166deg, #111 0 3px, #616161 4px, #171717 8px);
+}
+
+.material-mark {
   display: inline-block;
   width: 28px;
   height: 18px;
@@ -221,105 +248,27 @@ button {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 5px;
-  background-color: #0b0b0c;
+  background-color: #101010;
 }
 
-.background-style-relief {
+.material-mineral {
+  background: linear-gradient(135deg, #181818, #777 38%, #242424 62%, #555);
+}
+
+.material-glass {
+  background: linear-gradient(135deg, #0d0d0e 0 35%, #7d7d7d 42%, #232323 50% 76%, #aaa 82%, #161616);
+}
+
+.material-ink {
+  background: linear-gradient(145deg, #111 0 32%, #777 33% 52%, #262626 53% 72%, #999 73%);
+}
+
+.material-frost {
   background:
-    radial-gradient(circle at 28% 34%, rgba(255, 255, 255, 0.48), transparent 22%),
-    radial-gradient(circle at 68% 62%, rgba(255, 255, 255, 0.2), transparent 30%),
-    conic-gradient(from 24deg at 52% 50%, #111 0 20%, #494949 30%, #171717 48%, #5a5a5a 62%, #101010 80%);
-}
-
-.background-style-dunes {
-  background:
-    linear-gradient(125deg, transparent 18%, rgba(255, 255, 255, 0.45) 27%, rgba(255, 255, 255, 0.08) 38%, transparent 47%),
-    repeating-linear-gradient(154deg, #0d0d0d 0 4px, #515151 5px, #171717 8px);
-}
-
-.background-style-strata {
-  background:
-    radial-gradient(ellipse at 38% 56%, transparent 0 19%, #626262 21% 25%, #171717 28% 37%, #4a4a4a 40% 45%, #0d0d0d 49% 62%, #343434 66% 70%, #0b0b0b 74%);
-}
-
-.background-style-currents {
-  background:
-    radial-gradient(ellipse at 18% 25%, transparent 0 28%, rgba(255,255,255,0.34) 35%, transparent 45%),
-    repeating-linear-gradient(128deg, #0c0c0c 0 5px, #525252 8px, #191919 13px, #343434 17px);
-}
-
-.animation-style-mark {
-  position: relative;
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  color: currentColor;
-  opacity: 0.76;
-}
-
-.animation-style-field,
-.animation-style-wave {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0 3px,
-    currentColor 3px 4px
-  );
-  border-radius: 50%;
-  transform: rotate(-14deg);
-}
-
-.animation-style-wave {
-  transform: rotate(18deg) scaleX(0.82);
-}
-
-.animation-style-orbit {
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  transform: rotate(-28deg) scaleY(0.55);
-}
-
-.animation-style-orbit::after {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  content: "";
-  transform: translate(-50%, -50%) scaleY(1.82);
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.animation-style-globe {
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background:
-    linear-gradient(90deg, transparent 46%, currentColor 48% 52%, transparent 54%),
-    linear-gradient(transparent 46%, currentColor 48% 52%, transparent 54%);
-}
-
-.animation-style-solve {
-  width: 12px;
-  height: 12px;
-  margin: 2px;
-  border: 1px solid currentColor;
-  box-shadow: 4px 4px 0 -2px currentColor, -4px -4px 0 -2px currentColor;
-  transform: rotate(18deg);
-}
-
-.animation-style-pulse {
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 3px transparent, inset 0 0 0 4px currentColor;
-}
-
-.animation-style-pulse::after {
-  position: absolute;
-  inset: 5px;
-  content: "";
-  border: 1px solid currentColor;
-  border-radius: 50%;
+    radial-gradient(circle at 20% 28%, #aaa 0 3%, transparent 4%),
+    radial-gradient(circle at 67% 62%, #8b8b8b 0 3%, transparent 4%),
+    radial-gradient(circle at 82% 28%, #777 0 2%, transparent 3%),
+    linear-gradient(135deg, #222, #626262, #171717);
 }
 
 @media (prefers-reduced-motion: reduce) {

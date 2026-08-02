@@ -1,6 +1,6 @@
 # npm publishing guide
 
-Orbsona is published as the public package [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona) under the [`accidental-revenue`](https://www.npmjs.com/org/accidental-revenue) npm organization. The current public release is `0.1.1`.
+Orbsona is published as the public package [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona) under the [`accidental-revenue`](https://www.npmjs.com/org/accidental-revenue) npm organization. The current public release is `0.2.0`.
 
 ## Ownership and package names
 
@@ -12,7 +12,24 @@ The initial package is:
 
 The organization leaves room for future packages such as `@accidental-revenue/orbsona-mcp` or `@accidental-revenue/orbsona-cli`, but those should only be created when they contain maintained, independently useful functionality.
 
-## 1. Authenticate safely
+## Recommended: trusted publishing
+
+The repository includes `.github/workflows/release.yml`. It uses GitHub Actions OIDC, npm 11.17.0, and Node 24. It does not need a long-lived npm token or a cached release install.
+
+In the npm package settings for `@accidental-revenue/orbsona`, add a trusted publisher with:
+
+- provider: GitHub Actions
+- organization or user: `Accidental-Revenue`
+- repository: `orbsona`
+- workflow filename: `release.yml`
+- environment: leave empty unless the workflow is later assigned one
+- allowed actions: `npm publish`
+
+After the trusted publisher is saved, run the **Publish package** workflow from the repository Actions tab. The workflow verifies lint, package tests, the production build, and the high-severity dependency audit before publishing. For a public repository and package, npm generates provenance automatically.
+
+Current npm requirements for trusted publishing are npm 11.5.1 or newer and Node 22.14.0 or newer. The workflow pins compatible versions.
+
+## Alternative: authenticate interactively
 
 Run these commands in a trusted local terminal. Never paste passwords, one-time codes, recovery codes, or access tokens into source files, issues, or chat:
 
@@ -25,7 +42,7 @@ npm access list packages @accidental-revenue
 
 Publishing requires account 2FA or an appropriately scoped publishing mechanism. For an interactive release, npm prompts for the one-time code during `npm publish`.
 
-## 2. Verify the release artifact
+## Verify the release artifact
 
 From the repository root:
 
@@ -38,7 +55,7 @@ npm pack --dry-run --workspace @accidental-revenue/orbsona
 
 The package preview must contain only `dist`, `README.md`, `LICENSE`, and `package.json`. Do not publish if it includes environment files, credentials, application source, screenshots, or unrelated assets.
 
-## 3. Publish the public release
+## Publish interactively
 
 After the checks pass:
 
@@ -48,7 +65,7 @@ npm publish --workspace @accidental-revenue/orbsona --access public
 
 The explicit `--access public` flag is important for an organization-scoped package.
 
-## 4. Verify from a clean project
+## Verify from a clean project
 
 ```bash
 npm view @accidental-revenue/orbsona version
@@ -59,7 +76,7 @@ npm init -y
 npm install @accidental-revenue/orbsona
 ```
 
-The current public Orbsona release is `0.1.1`.
+The current public Orbsona release is `0.2.0`.
 
 The same npm-registry release works with other JavaScript package managers:
 
@@ -71,7 +88,7 @@ bun add @accidental-revenue/orbsona
 
 No separate pnpm, Yarn, or Bun publication is required.
 
-## 5. Automate future releases
+## Maintain future releases
 
 For later versions, prefer npm trusted publishing from a supported CI provider. Avoid long-lived classic access tokens. Every release should:
 

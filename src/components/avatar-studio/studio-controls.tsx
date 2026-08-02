@@ -2,11 +2,11 @@
 
 import { IconRefresh } from "@tabler/icons-react";
 import {
-  animations,
-  AvatarAnimation,
-  AvatarBackground,
   AvatarIdentity,
-  backgrounds,
+  AvatarMaterial,
+  AvatarMorphology,
+  materials,
+  morphologies,
   Palette,
   palettes,
 } from "@/lib/avatar";
@@ -57,39 +57,26 @@ export function StudioControls({
       </label>
 
       <fieldset>
-        <legend className="mb-3 text-sm font-medium text-neutral-300">Background</legend>
-        <div className="grid grid-cols-4 gap-2">
-          {backgrounds.map((background) => (
+        <legend className="mb-3 text-sm font-medium text-neutral-300">Morphology</legend>
+        <div className="grid grid-cols-2 gap-2">
+          {morphologies.map((morphology) => (
             <button
-              key={background.id}
+              key={morphology.id}
               type="button"
-              aria-pressed={identity.background === background.id}
-              onClick={() => onChange({ background: background.id as AvatarBackground })}
+              title={morphology.description}
+              aria-pressed={identity.morphology === morphology.id}
+              onClick={() => onChange({ morphology: morphology.id as AvatarMorphology })}
               className={cn(
-                "flex h-16 flex-col items-center justify-center gap-2 rounded-xl border px-2 text-sm transition-[border-color,background-color,color,transform] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-                identity.background === background.id
+                "flex h-12 items-center gap-2.5 rounded-xl border px-3 text-left text-sm transition-[border-color,background-color,color,transform] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                identity.morphology === morphology.id
                   ? "border-white/25 bg-white/[0.08] text-white"
                   : "border-white/[0.08] bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:text-neutral-200",
               )}
             >
-              <span className={cn("background-style-mark", `background-style-${background.id}`)} aria-hidden="true" />
-              <span className="block truncate font-medium">{background.name}</span>
+              <span className={cn("morphology-mark", `morphology-${morphology.id}`)} aria-hidden="true" />
+              <span className="block truncate font-medium">{morphology.name}</span>
             </button>
           ))}
-        </div>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <EffectCheckbox
-            checked={identity.rotateBackground ?? false}
-            label="Rotate"
-            description="Slow circular drift"
-            onChange={(checked) => onChange({ rotateBackground: checked })}
-          />
-          <EffectCheckbox
-            checked={identity.grain ?? false}
-            label="Grain"
-            description="Granular texture"
-            onChange={(checked) => onChange({ grain: checked })}
-          />
         </div>
       </fieldset>
 
@@ -108,29 +95,24 @@ export function StudioControls({
       </fieldset>
 
       <fieldset>
-        <legend className="mb-3 text-sm font-medium text-neutral-300">Animation</legend>
-        <div className="grid grid-cols-3 gap-2">
-          {animations.map((animation) => (
+        <legend className="mb-3 text-sm font-medium text-neutral-300">Material</legend>
+        <div className="grid grid-cols-4 gap-2">
+          {materials.map((material) => (
             <button
-              key={animation.id}
+              key={material.id}
               type="button"
-              title={animation.description}
-              aria-pressed={identity.animation === animation.id}
-              onClick={() => onChange({ animation: animation.id as AvatarAnimation })}
+              title={material.description}
+              aria-pressed={identity.material === material.id}
+              onClick={() => onChange({ material: material.id as AvatarMaterial })}
               className={cn(
-                "flex h-12 items-center justify-center gap-1.5 rounded-xl border px-1.5 text-sm transition-[border-color,background-color,color,transform] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-                identity.animation === animation.id
+                "flex h-16 flex-col items-center justify-center gap-2 rounded-xl border px-2 text-sm transition-[border-color,background-color,color,transform] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                identity.material === material.id
                   ? "border-white/25 bg-white/[0.08] text-white"
                   : "border-white/[0.08] bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:text-neutral-200",
               )}
             >
-              <span className={cn("animation-style-mark", `animation-style-${animation.id}`)} aria-hidden="true" />
-              <span className="shrink-0 font-medium">{animation.name}</span>
-              {animation.badge && (
-                <span className="shrink-0 rounded-md border border-sky-300/20 bg-sky-300/[0.1] px-1 py-0.5 text-[11px] font-semibold leading-none text-sky-200">
-                  {animation.badge}
-                </span>
-              )}
+              <span className={cn("material-mark", `material-${material.id}`)} aria-hidden="true" />
+              <span className="shrink-0 font-medium">{material.name}</span>
             </button>
           ))}
         </div>
@@ -140,7 +122,7 @@ export function StudioControls({
         <label htmlFor="identity-seed" className="text-sm font-medium text-neutral-300">
           Identity seed
           <span className="mt-1 block text-xs font-normal leading-5 text-neutral-500">
-            Reproduces the same relief, grain, and motion phase.
+            Reproduces the same terrain and motion phase on every device.
           </span>
         </label>
         <div className="grid grid-cols-[minmax(0,1fr)_48px] gap-2">
@@ -189,39 +171,6 @@ export function StudioControls({
         )}
       </div>
     </div>
-  );
-}
-
-function EffectCheckbox({
-  checked,
-  label,
-  description,
-  onChange,
-}: {
-  checked: boolean;
-  label: string;
-  description: string;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <label className="group flex min-w-0 cursor-pointer items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-2.5 transition-[border-color,background-color] hover:border-white/20 hover:bg-white/[0.04]">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        className="peer sr-only"
-      />
-      <span
-        aria-hidden="true"
-        className="grid size-5 shrink-0 place-items-center rounded-md border border-white/20 bg-black/20 text-xs text-transparent transition-[border-color,background-color,color] peer-checked:border-white peer-checked:bg-white peer-checked:text-neutral-950 peer-focus-visible:ring-2 peer-focus-visible:ring-accent peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-neutral-900"
-      >
-        ✓
-      </span>
-      <span className="min-w-0">
-        <span className="block text-sm font-medium text-neutral-200">{label}</span>
-        <span className="block truncate text-xs leading-5 text-neutral-500">{description}</span>
-      </span>
-    </label>
   );
 }
 

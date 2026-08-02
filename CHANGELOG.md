@@ -2,6 +2,26 @@
 
 All notable changes to Orbsona are documented here. The project follows semantic versioning for the public package.
 
+## [0.2.0] - 2026-08-02
+
+### Changed
+
+- Replace preset-based visuals with Orbsona's original Living Topographies renderer.
+- Introduce eight deterministic morphologies and four material models.
+- Make runtime state deform one continuous surface instead of drawing separate overlay effects.
+- Move the portable identity contract to version 2 with `morphology` and `material` fields.
+- Remove the `thinking-orbs` runtime dependency.
+
+### Compatibility
+
+- Continue accepting version 1 identity files and browser drafts through deterministic migration.
+- Preserve the React component props and all eight semantic runtime states.
+
+### Security and quality
+
+- Add deterministic topology and state-grammar tests.
+- Remove the retired transitive package and resolve the dependency audit to zero known vulnerabilities.
+
 ## [0.1.1] - 2026-07-24
 
 ### Fixed
@@ -22,5 +42,6 @@ All notable changes to Orbsona are documented here. The project follows semantic
 
 - First public release of the identity contract, React renderer, local-first Studio, Playground, Install, and Documentation.
 
+[0.2.0]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Accidental-Revenue/orbsona/releases/tag/v0.1.0

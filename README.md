@@ -31,7 +31,7 @@ npm run test:browser
 
 ## Product surfaces
 
-- Studio with deterministic background, optional rotation and grain, palette, animation, and seed controls
+- Studio with deterministic morphology, material, palette, and seed controls
 - One autosaved browser draft with explicit import and reset controls
 - Runtime playground for eight semantic states and live signal energy
 - Provider-neutral React package contract with no first-party provider adapters
@@ -42,10 +42,9 @@ npm run test:browser
 
 ## Runtime model
 
-- Four relief-style backgrounds
-- Two composable background effects: slow rotation and deterministic grain
+- Eight original Living Topographies morphologies
+- Four surface materials: Mineral, Glass, Ink, and Frost
 - Five curated palettes
-- Six motion presets
 - Eight runtime states: idle, connecting, listening, thinking, speaking, working, success, and error
 - Deterministic generation from a numeric identity seed
 - Fixed-height native studio shell with no document scrolling
@@ -70,12 +69,12 @@ import { AgentAvatar } from "@accidental-revenue/orbsona/react";
 
 Package source and API documentation live in [`packages/orbsona`](packages/orbsona). The verified npm release workflow lives in [`docs/npm-publishing.md`](docs/npm-publishing.md).
 
-The renderer uses a bounded 2D canvas pipeline with motion primitives from `thinking-orbs`. The product UI shares the typographic, color, spacing, and Aceternity-inspired interaction system used by the Accidental Revenue portfolio while keeping a distinct application layout.
+The renderer uses Orbsona's original deterministic height-field engine. Morphology defines the terrain, material defines how light meets it, and runtime state deforms the same surface instead of stacking an unrelated animation over it. The product UI shares the typographic, color, spacing, and interaction system used by the Accidental Revenue portfolio while keeping a distinct application layout.
 
 ## Open source
 
 Orbsona is released under the [MIT License](LICENSE). The Studio is local-first: it keeps one draft in browser storage and does not require an account, backend, hosted identity library, or analytics service.
 
-The open-source product boundary is recorded in [ADR-001](docs/decisions/001-open-source-local-first-package.md). The launch scope and evidence-gated hosted strategy are recorded in [ADR-002](docs/decisions/002-launch-scope-and-roadmap.md).
+The open-source product boundary is recorded in [ADR-001](docs/decisions/001-open-source-local-first-package.md). The launch scope and evidence-gated hosted strategy are recorded in [ADR-002](docs/decisions/002-launch-scope-and-roadmap.md). The original renderer decision and migration contract are recorded in [ADR-003](docs/decisions/003-living-topographies.md).
 
 Release history is recorded in the [changelog](CHANGELOG.md). The maintained product direction lives in the [roadmap](ROADMAP.md).

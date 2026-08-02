@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const testPort = Number(process.env.PLAYWRIGHT_PORT ?? 3000);
+
 export default defineConfig({
   testDir: "./tests/browser",
   outputDir: "./test-results",
@@ -10,7 +12,7 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
   workers: process.env.CI ? 2 : 3,
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: `http://127.0.0.1:${testPort}`,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
@@ -29,8 +31,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run build && npm run start -- -H 127.0.0.1",
-    url: "http://127.0.0.1:3000",
+    command: `npm run build && npm run start -- -H 127.0.0.1 -p ${testPort}`,
+    url: `http://127.0.0.1:${testPort}`,
     reuseExistingServer: false,
     timeout: 120_000,
   },

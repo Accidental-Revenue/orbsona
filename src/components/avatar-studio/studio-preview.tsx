@@ -1,7 +1,7 @@
 "use client";
 
 import { AvatarOrb } from "@/components/orb/avatar-orb";
-import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
+import { AmbientSignalField } from "@/components/ui/ambient-signal-field";
 import { AgentState, AvatarIdentity, states } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 import type { RefObject } from "react";
@@ -34,18 +34,7 @@ export function StudioPreview({
   return (
     <section aria-label="Avatar preview" className="preview-stage relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#0b0b0b]">
       <div className="preview-grid absolute inset-0" aria-hidden="true" />
-      <DottedGlowBackground
-        className="preview-dots pointer-events-none"
-        gap={13}
-        radius={0.72}
-        color="rgba(255,255,255,0.2)"
-        glowColor="rgba(110,178,255,0.72)"
-        opacity={0.38}
-        backgroundOpacity={0}
-        speedMin={0.18}
-        speedMax={0.72}
-        speedScale={0.72}
-      />
+      <AmbientSignalField />
       <div
         ref={canvasRootRef}
         className={cn(

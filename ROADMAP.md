@@ -15,9 +15,10 @@ This roadmap is directional. Evidence from real integrations can reorder it.
 
 ## Now: launch and learn (days 0–30)
 
-### Ship and protect v0.1
+### Ship and protect the public package
 
 - Release v0.1.1 with compact avatar rendering, fixed 512 × 512 PNG export, exposed seeds, and the frozen v1 seed contract.
+- Release v0.2.0 with the original Living Topographies renderer, eight morphologies, four materials, and v1 identity migration.
 - Gate pull requests with lint, package tests, the production build, and critical browser journeys.
 - Run Firefox and WebKit journeys on a scheduled workflow if the main CI gate becomes too slow.
 - Add trusted npm publishing with provenance after the repository and npm organization are connected.
@@ -38,10 +39,10 @@ This roadmap is directional. Evidence from real integrations can reorder it.
 
 ## Next: deepen the platform (days 31–60)
 
-### Identity contract v2
+### Grow the v2 identity system
 
-- Design an order-independent, versioned derivation algorithm so new palettes, reliefs, and motion systems can be added without remapping existing seeds.
-- Add explicit v1-to-v2 migration tooling and compatibility fixtures.
+- Extend the versioned derivation algorithm so future palettes, morphologies, and materials can be added without remapping existing v2 seeds.
+- Publish the v1-to-v2 migration table and compatibility fixtures as part of the maintained contract.
 - Introduce a stable visual fingerprint for reproduction and debugging. It is not a uniqueness or ownership claim.
 
 ### Better production integration
