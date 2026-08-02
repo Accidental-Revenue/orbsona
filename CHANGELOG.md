@@ -7,6 +7,7 @@ All notable changes to Orbsona are documented here. The project follows semantic
 ### Fixed
 
 - Tolerate npm propagation delay when verifying a newly published release.
+- Redirect `www.orbsona.com` permanently to the canonical apex domain.
 
 ## [0.2.0] - 2026-08-02
 
