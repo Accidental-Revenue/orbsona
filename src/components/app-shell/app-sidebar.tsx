@@ -40,7 +40,7 @@ function CurrentIdentity({ identity }: { identity: AvatarIdentity }) {
       <div className="min-w-0">
         <p className="truncate text-base font-medium text-neutral-100">{identity.name || "Untitled avatar"}</p>
         <p className="truncate text-sm capitalize text-neutral-500">
-          {identity.morphology} / {identity.material}
+          {identity.background} / {identity.animation}
         </p>
       </div>
     </div>
@@ -71,6 +71,7 @@ export function AppSidebar() {
     <aside className="hidden min-h-0 flex-col overflow-hidden rounded-3xl border border-white/[0.1] bg-neutral-900/60 shadow-[0_16px_50px_rgba(0,0,0,0.28)] xl:flex">
       <Link
         href="/"
+        prefetch={false}
         aria-label="Orbsona home"
         className="flex h-20 shrink-0 items-center gap-3 border-b border-white/[0.1] px-5 transition-colors hover:bg-white/[0.025] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
       >
@@ -95,6 +96,7 @@ export function AppSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 aria-current={active ? "page" : undefined}
                 className={active
                   ? "flex h-12 items-center gap-3 rounded-xl border border-white/[0.12] bg-white/[0.08] px-3.5 text-base font-medium text-neutral-100 transition-[border-color,background-color,transform] hover:border-white/25 hover:bg-white/[0.12] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -132,21 +134,21 @@ export function AppSidebar() {
 export function MobileNavigation() {
   return (
     <div className="flex h-16 items-center justify-between rounded-2xl border border-white/[0.1] bg-neutral-900/70 px-4 xl:hidden">
-      <Link href="/" aria-label="Orbsona home" className="flex items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+      <Link href="/" prefetch={false} aria-label="Orbsona home" className="flex items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
         <IdentityThumbnail identity={initialIdentity} size={36} energy={0.28} />
         <span className="font-display text-lg font-semibold tracking-[-0.025em]">Orbsona</span>
       </Link>
       <div className="flex gap-1">
-        <Link href="/" aria-label="Open Studio" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+        <Link href="/" prefetch={false} aria-label="Open Studio" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
           <IconLayoutGrid size={19} stroke={1.7} aria-hidden="true" />
         </Link>
-        <Link href="/playground" aria-label="Open Playground" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+        <Link href="/playground" prefetch={false} aria-label="Open Playground" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
           <IconActivityHeartbeat size={19} stroke={1.7} aria-hidden="true" />
         </Link>
-        <Link href="/install" aria-label="Open Install guide" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+        <Link href="/install" prefetch={false} aria-label="Open Install guide" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
           <IconCode size={19} stroke={1.7} aria-hidden="true" />
         </Link>
-        <Link href="/docs" aria-label="Open Documentation" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+        <Link href="/docs" prefetch={false} aria-label="Open Documentation" className="grid h-10 w-10 place-items-center rounded-xl text-neutral-300 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
           <IconBook2 size={19} stroke={1.7} aria-hidden="true" />
         </Link>
       </div>

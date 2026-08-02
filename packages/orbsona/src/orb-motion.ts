@@ -1,4 +1,5 @@
-import type { AgentState } from "./index.js";
+import type { AgentState, AvatarIdentity } from "./index.js";
+import { ORB_RADIUS_RATIO } from "./orb-backgrounds.js";
 
 interface MotionTargets {
   speed: number;
@@ -111,12 +112,12 @@ export function updateMotion(
   const delta = reduceMotion ? 0 : clamp(deltaTime, 0, 0.05);
   runtime.stateAge += delta;
   // Input and output remain independent because listening and speaking express
-  // different physical behaviors in the topology grammar.
+  // different physical behaviors in the shared layered motion grammar.
   const inputTarget = state === "listening"
-    ? clamp(inputLevel ?? previewSpeechEnvelope(timestamp, seed, "input"))
+    ? clamp(inputLevel ?? (reduceMotion ? 0.48 : previewSpeechEnvelope(timestamp, seed, "input")))
     : 0;
   const outputTarget = state === "speaking"
-    ? clamp(outputLevel ?? previewSpeechEnvelope(timestamp, seed, "output"))
+    ? clamp(outputLevel ?? (reduceMotion ? 0.58 : previewSpeechEnvelope(timestamp, seed, "output")))
     : 0;
   const energyTarget = clamp(energyLevel ?? 0);
   runtime.inputLevel = approach(runtime.inputLevel, inputTarget, delta, inputTarget > runtime.inputLevel ? 0.05 : 0.3);
@@ -192,4 +193,149 @@ export function updateMotion(
     outputLevel: runtime.outputLevel,
     energyLevel: runtime.energyLevel,
   };
+}
+
+export function drawPulseGeometry(context: CanvasRenderingContext2D, size: number, time: number) {
+  const center = size / 2;
+  context.save();
+  for (let ring = 0; ring < 5; ring += 1) {
+    const radius = size * (0.105 + ring * 0.061) * (1 + Math.sin(time * 1.3 + ring * 0.9) * 0.018);
+    const points = 22 + ring * 10;
+    const direction = ring % 2 === 0 ? 1 : -1;
+    for (let point = 0; point < points; point += 1) {
+      const unit = point / points;
+      const angle = unit * Math.PI * 2 + time * direction * (0.24 + ring * 0.018);
+      const signal = 0.5 + 0.5 * Math.sin(angle * 2 - time * 2.2 + ring * 0.8);
+      const dotRadius = Math.max(0.55, size * (0.0042 + signal * 0.0018));
+      context.globalAlpha = 0.34 + signal * 0.58;
+      context.fillStyle = "#fff";
+      context.beginPath();
+      context.arc(center + Math.cos(angle) * radius, center + Math.sin(angle) * radius, dotRadius, 0, Math.PI * 2);
+      context.fill();
+    }
+  }
+  context.globalAlpha = 0.9;
+  context.beginPath();
+  context.arc(center, center, Math.max(0.8, size * 0.008), 0, Math.PI * 2);
+  context.fill();
+  context.restore();
+}
+
+function strokeCircle(
+  context: CanvasRenderingContext2D,
+  center: number,
+  radius: number,
+  color: string,
+  alpha: number,
+  width: number,
+) {
+  context.globalAlpha = clamp(alpha);
+  context.strokeStyle = color;
+  context.lineWidth = width;
+  context.beginPath();
+  context.arc(center, center, radius, 0, Math.PI * 2);
+  context.stroke();
+}
+
+export function drawStateOverlay(
+  context: CanvasRenderingContext2D,
+  size: number,
+  frame: MotionFrame,
+  colors: AvatarIdentity["palette"]["colors"],
+) {
+  const center = size / 2;
+  const radius = size * ORB_RADIUS_RATIO;
+  const lineWidth = Math.max(0.8, size * 0.006);
+  context.save();
+  context.globalCompositeOperation = "lighter";
+  context.lineCap = "round";
+
+  if (frame.state === "listening") {
+    const level = frame.inputLevel;
+    strokeCircle(context, center, radius * (0.73 + level * 0.09), colors[2], 0.16 + level * 0.58, lineWidth * (0.75 + level));
+    const wave = (frame.stateAge * 0.72) % 1;
+    strokeCircle(context, center, radius * (0.32 + wave * 0.58), colors[0], level * (1 - wave) * 0.46, lineWidth * 0.72);
+  }
+
+  if (frame.state === "connecting") {
+    context.strokeStyle = colors[2];
+    context.lineWidth = lineWidth * 0.9;
+    context.globalAlpha = 0.58;
+    context.setLineDash([radius * 0.16, radius * 0.12]);
+    context.lineDashOffset = -frame.stateAge * radius * 0.72;
+    context.beginPath();
+    context.arc(center, center, radius * 0.86, 0, Math.PI * 2);
+    context.stroke();
+    context.setLineDash([]);
+  }
+
+  if (frame.state === "thinking") {
+    const core = context.createRadialGradient(center, center, 0, center, center, radius * 0.46);
+    core.addColorStop(0, `${colors[2]}80`);
+    core.addColorStop(0.34, `${colors[0]}38`);
+    core.addColorStop(1, `${colors[0]}00`);
+    context.globalAlpha = 0.58;
+    context.fillStyle = core;
+    context.fillRect(center - radius, center - radius, radius * 2, radius * 2);
+    context.strokeStyle = colors[2];
+    context.lineWidth = lineWidth * 0.75;
+    context.globalAlpha = 0.34;
+    context.beginPath();
+    context.arc(center, center, radius * 0.42, -frame.stateAge * 1.35, -frame.stateAge * 1.35 + Math.PI * 0.7);
+    context.stroke();
+    context.globalAlpha = 0.22;
+    context.beginPath();
+    context.arc(center, center, radius * 0.58, frame.stateAge * 0.92, frame.stateAge * 0.92 + Math.PI * 0.52);
+    context.stroke();
+  }
+
+  if (frame.state === "speaking") {
+    const level = frame.outputLevel;
+    context.strokeStyle = colors[2];
+    context.lineWidth = lineWidth * (0.8 + level * 1.45);
+    context.globalAlpha = 0.18 + level * 0.66;
+    context.setLineDash([radius * 0.2, radius * 0.11]);
+    context.lineDashOffset = -frame.stateAge * radius * 0.8;
+    context.beginPath();
+    context.arc(center, center, radius * (0.86 + level * 0.045), 0, Math.PI * 2);
+    context.stroke();
+    context.setLineDash([]);
+  }
+
+  if (frame.state === "working") {
+    const angle = frame.stateAge * (Math.PI * 2 / 1.8);
+    context.strokeStyle = colors[2];
+    context.lineWidth = lineWidth;
+    context.globalAlpha = 0.72;
+    context.beginPath();
+    context.arc(center, center, radius * 0.88, angle, angle + Math.PI * 0.52);
+    context.stroke();
+    context.globalAlpha = 0.2;
+    context.beginPath();
+    context.arc(center, center, radius * 0.72, -angle * 0.72, -angle * 0.72 + Math.PI * 0.34);
+    context.stroke();
+  }
+
+  if (frame.state === "success") {
+    const bloom = clamp((frame.stateAge - 0.24) / 0.7);
+    const fade = 1 - easeOutCubic(bloom);
+    strokeCircle(context, center, radius * (0.34 + bloom * 0.62), colors[2], fade * 0.92, lineWidth * (1.5 - bloom * 0.6));
+    if (frame.stateAge >= 0.7) {
+      strokeCircle(context, center, radius * 0.84, colors[2], 0.16, lineWidth * 0.65);
+    }
+  }
+
+  if (frame.state === "error") {
+    context.strokeStyle = colors[2];
+    context.lineWidth = lineWidth * 1.15;
+    context.globalAlpha = 0.72;
+    context.beginPath();
+    context.arc(center, center, radius * 0.82, -0.72, 0.72);
+    context.stroke();
+    context.beginPath();
+    context.arc(center, center, radius * 0.82, Math.PI - 0.72, Math.PI + 0.72);
+    context.stroke();
+  }
+
+  context.restore();
 }

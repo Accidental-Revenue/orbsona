@@ -83,11 +83,11 @@ export function PackageGuide() {
                 rel="noreferrer"
                 className="rounded-full border border-emerald-200/[0.18] bg-emerald-200/[0.06] px-3 py-1.5 text-xs font-medium text-emerald-100/85 transition-colors hover:border-emerald-200/30 hover:bg-emerald-200/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                v0.2.0 · public on npm
+                View on npm
               </a>
             </div>
             <p className="mt-5 max-w-3xl text-base leading-7 text-neutral-400">
-              The public package contains the v2 identity contract, TypeScript types, and original Living Topographies renderer. Every package manager below installs the same v0.2.0 release from npm.
+              The public package contains the versioned identity contract, TypeScript types, and layered canvas renderer. Orbsona’s nature presets are maintained here; the restored legacy motion collection is used under its MIT license and credited in the package notices.
             </p>
             <InstallCommand className="mt-5" />
           </div>

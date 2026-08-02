@@ -1,6 +1,18 @@
 export const ORBSONA_IDENTITY_FORMAT = "orbsona.identity" as const;
 export const ORBSONA_IDENTITY_VERSION = 2 as const;
 
+export type AvatarBackground = "relief" | "dunes" | "strata" | "currents";
+export type AvatarAnimation =
+  | "phyllotaxis"
+  | "radiolaria"
+  | "field"
+  | "orbit"
+  | "globe"
+  | "wave"
+  | "solve"
+  | "pulse";
+
+/** @deprecated Unreleased topology-preview type retained only for draft migration. */
 export type AvatarMorphology =
   | "basin"
   | "ridge"
@@ -10,12 +22,8 @@ export type AvatarMorphology =
   | "pleat"
   | "current"
   | "chorus";
+/** @deprecated Unreleased topology-preview type retained only for draft migration. */
 export type AvatarMaterial = "mineral" | "glass" | "ink" | "frost";
-
-/** @deprecated Kept only to migrate Orbsona v1 identity documents. */
-export type AvatarBackground = "relief" | "dunes" | "strata" | "currents";
-/** @deprecated Kept only to migrate Orbsona v1 identity documents. */
-export type AvatarAnimation = "field" | "orbit" | "globe" | "wave" | "solve" | "pulse";
 
 export type AgentState =
   | "idle"
@@ -35,8 +43,12 @@ export interface Palette {
 
 export interface AvatarIdentity {
   name: string;
-  morphology: AvatarMorphology;
-  material: AvatarMaterial;
+  background: AvatarBackground;
+  /** Slowly rotate the relief layer behind the foreground organism. */
+  rotateBackground?: boolean;
+  /** Add a deterministic granular finish to the relief layer. */
+  grain?: boolean;
+  animation: AvatarAnimation;
   palette: Palette;
   seed: number;
 }
@@ -46,7 +58,15 @@ export interface LegacyAvatarIdentityV1 {
   background: AvatarBackground;
   rotateBackground?: boolean;
   grain?: boolean;
-  animation: AvatarAnimation;
+  animation: Exclude<AvatarAnimation, "phyllotaxis" | "radiolaria">;
+  palette: Palette;
+  seed: number;
+}
+
+export interface TopologyPreviewIdentity {
+  name: string;
+  morphology: AvatarMorphology;
+  material: AvatarMaterial;
   palette: Palette;
   seed: number;
 }
@@ -81,30 +101,44 @@ export const palettes: Palette[] = [
   { id: "mono", name: "Mono", colors: ["#dddddd", "#414141", "#ffffff"] },
 ];
 
-export const morphologies: Array<{
-  id: AvatarMorphology;
+export const backgrounds: Array<{
+  id: AvatarBackground;
   name: string;
   description: string;
 }> = [
-  { id: "basin", name: "Basin", description: "Deep fields that gather toward a moving center" },
-  { id: "ridge", name: "Ridge", description: "Layered contours that fold and reorganize" },
-  { id: "archipelago", name: "Archipelago", description: "Raised islands that connect and dissolve" },
-  { id: "fault", name: "Fault", description: "Offset plates with controlled shear" },
-  { id: "cellular", name: "Cellular", description: "Breathing membrane-like regions" },
-  { id: "pleat", name: "Pleat", description: "Soft fabric folds crossing the surface" },
-  { id: "current", name: "Current", description: "Directional channels carrying signal" },
-  { id: "chorus", name: "Chorus", description: "Many local fields moving in coordination" },
+  { id: "relief", name: "Relief", description: "Organic mineral terrain" },
+  { id: "dunes", name: "Dunes", description: "Wind-shaped parallel ridges" },
+  { id: "strata", name: "Strata", description: "Layered geological terraces" },
+  { id: "currents", name: "Currents", description: "Directional flowing relief" },
 ];
 
-export const materials: Array<{
-  id: AvatarMaterial;
+export const animations: Array<{
+  id: AvatarAnimation;
   name: string;
   description: string;
+  origin: "orbsona" | "thinking-orbs";
+  badge?: "New";
 }> = [
-  { id: "mineral", name: "Mineral", description: "Dimensional shaded relief" },
-  { id: "glass", name: "Glass", description: "Deep translucent refraction" },
-  { id: "ink", name: "Ink", description: "Graphic contour bands" },
-  { id: "frost", name: "Frost", description: "Soft granular diffusion" },
+  {
+    id: "phyllotaxis",
+    name: "Phyllotaxis",
+    description: "Golden-angle growth found in flowers and seed heads",
+    origin: "orbsona",
+    badge: "New",
+  },
+  {
+    id: "radiolaria",
+    name: "Radiolaria",
+    description: "A rotating lattice inspired by microscopic silica shells",
+    origin: "orbsona",
+    badge: "New",
+  },
+  { id: "field", name: "Field", description: "Undulating multi-band sash", origin: "thinking-orbs" },
+  { id: "orbit", name: "Orbit", description: "Particles on tilted orbits", origin: "thinking-orbs" },
+  { id: "globe", name: "Globe", description: "Scanning dotted meridians", origin: "thinking-orbs" },
+  { id: "wave", name: "Wave", description: "Rolling latitude waveform", origin: "thinking-orbs" },
+  { id: "solve", name: "Solve", description: "Reorganizing spherical bands", origin: "thinking-orbs" },
+  { id: "pulse", name: "Pulse", description: "Concentric signal rings", origin: "orbsona" },
 ];
 
 export const states: Array<{
@@ -112,12 +146,12 @@ export const states: Array<{
   label: string;
   description: string;
 }> = [
-  { id: "idle", label: "Idle", description: "A slow, recognizable drift" },
-  { id: "listening", label: "Listening", description: "The surface gathers toward input" },
-  { id: "thinking", label: "Thinking", description: "Contours divide and reconnect" },
-  { id: "speaking", label: "Speaking", description: "Pressure travels through the surface" },
-  { id: "working", label: "Working", description: "Directional channels accelerate" },
-  { id: "success", label: "Success", description: "Separate contours align" },
+  { id: "idle", label: "Idle", description: "A slow, recognizable breath" },
+  { id: "listening", label: "Listening", description: "Attention gathers toward the user" },
+  { id: "thinking", label: "Thinking", description: "Internal systems reorganize" },
+  { id: "speaking", label: "Speaking", description: "Energy propagates outward" },
+  { id: "working", label: "Working", description: "Directional activity accelerates" },
+  { id: "success", label: "Success", description: "The organism briefly synchronizes" },
 ];
 
 export const runtimeStates: Array<{
@@ -126,47 +160,71 @@ export const runtimeStates: Array<{
   description: string;
 }> = [
   { id: "idle", label: "Idle", description: "Available and waiting" },
-  { id: "connecting", label: "Connecting", description: "Establishing a shared rhythm" },
-  { id: "listening", label: "Listening", description: "Gathering toward user input" },
-  { id: "thinking", label: "Thinking", description: "Dividing and reconnecting contours" },
-  { id: "speaking", label: "Speaking", description: "Sending pressure through the surface" },
-  { id: "working", label: "Working", description: "Driving energy through channels" },
-  { id: "success", label: "Success", description: "Bringing the field into alignment" },
-  { id: "error", label: "Error", description: "Holding a visible local displacement" },
+  { id: "connecting", label: "Connecting", description: "Establishing a live session" },
+  { id: "listening", label: "Listening", description: "Receiving user input" },
+  { id: "thinking", label: "Thinking", description: "Reasoning before responding" },
+  { id: "speaking", label: "Speaking", description: "Returning voice output" },
+  { id: "working", label: "Working", description: "Calling a tool or completing a task" },
+  { id: "success", label: "Success", description: "The requested action completed" },
+  { id: "error", label: "Error", description: "The session needs attention" },
 ];
 
 export const initialIdentity: AvatarIdentity = {
   name: "Aster",
-  morphology: "basin",
-  material: "mineral",
+  background: "relief",
+  rotateBackground: false,
+  grain: false,
+  animation: "field",
   palette: palettes[0],
   seed: 2718,
 };
 
-const morphologyIds = new Set<AvatarMorphology>(morphologies.map(({ id }) => id));
-const materialIds = new Set<AvatarMaterial>(materials.map(({ id }) => id));
-const legacyBackgroundIds = new Set<AvatarBackground>(["relief", "dunes", "strata", "currents"]);
-const legacyAnimationIds = new Set<AvatarAnimation>(["field", "orbit", "globe", "wave", "solve", "pulse"]);
+const backgroundIds = new Set<AvatarBackground>(backgrounds.map(({ id }) => id));
+const animationIds = new Set<AvatarAnimation>(animations.map(({ id }) => id));
+const v1AnimationIds = new Set<LegacyAvatarIdentityV1["animation"]>([
+  "field",
+  "orbit",
+  "globe",
+  "wave",
+  "solve",
+  "pulse",
+]);
+const morphologyIds = new Set<AvatarMorphology>([
+  "basin",
+  "ridge",
+  "archipelago",
+  "fault",
+  "cellular",
+  "pleat",
+  "current",
+  "chorus",
+]);
+const materialIds = new Set<AvatarMaterial>(["mineral", "glass", "ink", "frost"]);
 const colorPattern = /^#[0-9a-f]{6}$/i;
 
-const V2_SEED_MORPHOLOGIES = ["basin", "ridge", "archipelago", "fault", "cellular", "pleat", "current", "chorus"] as const;
-const V2_SEED_MATERIALS = ["mineral", "glass", "ink", "frost"] as const;
-const V2_SEED_PALETTES = ["ion", "moss", "ember", "mineral", "mono"] as const;
+// The original derivation is a published v1 contract. Do not insert new items
+// into these lists: an existing numeric seed must always resolve identically.
+const V1_SEED_BACKGROUNDS = ["relief", "dunes", "strata", "currents"] as const;
+const V1_SEED_ANIMATIONS = ["field", "orbit", "globe", "wave", "solve", "pulse"] as const;
+const V1_SEED_PALETTES = ["ion", "moss", "ember", "mineral", "mono"] as const;
+const V2_SEED_ANIMATIONS = ["phyllotaxis", "radiolaria", ...V1_SEED_ANIMATIONS] as const;
 
-const legacyMorphology: Record<AvatarAnimation, AvatarMorphology> = {
-  field: "ridge",
-  orbit: "archipelago",
-  globe: "cellular",
-  wave: "current",
-  solve: "pleat",
-  pulse: "chorus",
+const topologyAnimation: Record<AvatarMorphology, AvatarAnimation> = {
+  basin: "field",
+  ridge: "field",
+  archipelago: "orbit",
+  fault: "solve",
+  cellular: "globe",
+  pleat: "wave",
+  current: "pulse",
+  chorus: "phyllotaxis",
 };
 
-const legacyMaterial: Record<AvatarBackground, AvatarMaterial> = {
-  relief: "mineral",
-  dunes: "frost",
-  strata: "ink",
-  currents: "glass",
+const topologyBackground: Record<AvatarMaterial, AvatarBackground> = {
+  mineral: "relief",
+  glass: "currents",
+  ink: "strata",
+  frost: "dunes",
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -193,27 +251,54 @@ function hasIdentityBasics(value: Record<string, unknown>) {
 
 export function isAvatarIdentity(value: unknown): value is AvatarIdentity {
   if (!isRecord(value) || !hasIdentityBasics(value)) return false;
+  return typeof value.background === "string"
+    && backgroundIds.has(value.background as AvatarBackground)
+    && typeof value.animation === "string"
+    && animationIds.has(value.animation as AvatarAnimation)
+    && (value.rotateBackground === undefined || typeof value.rotateBackground === "boolean")
+    && (value.grain === undefined || typeof value.grain === "boolean");
+}
+
+export function isLegacyAvatarIdentityV1(value: unknown): value is LegacyAvatarIdentityV1 {
+  if (!isRecord(value) || !hasIdentityBasics(value)) return false;
+  return typeof value.background === "string"
+    && backgroundIds.has(value.background as AvatarBackground)
+    && typeof value.animation === "string"
+    && v1AnimationIds.has(value.animation as LegacyAvatarIdentityV1["animation"])
+    && (value.rotateBackground === undefined || typeof value.rotateBackground === "boolean")
+    && (value.grain === undefined || typeof value.grain === "boolean");
+}
+
+export function isTopologyPreviewIdentity(value: unknown): value is TopologyPreviewIdentity {
+  if (!isRecord(value) || !hasIdentityBasics(value)) return false;
   return typeof value.morphology === "string"
     && morphologyIds.has(value.morphology as AvatarMorphology)
     && typeof value.material === "string"
     && materialIds.has(value.material as AvatarMaterial);
 }
 
-export function isLegacyAvatarIdentityV1(value: unknown): value is LegacyAvatarIdentityV1 {
-  if (!isRecord(value) || !hasIdentityBasics(value)) return false;
-  return typeof value.background === "string"
-    && legacyBackgroundIds.has(value.background as AvatarBackground)
-    && typeof value.animation === "string"
-    && legacyAnimationIds.has(value.animation as AvatarAnimation)
-    && (value.rotateBackground === undefined || typeof value.rotateBackground === "boolean")
-    && (value.grain === undefined || typeof value.grain === "boolean");
-}
-
 export function migrateLegacyIdentityV1(identity: LegacyAvatarIdentityV1): AvatarIdentity {
   return {
     name: identity.name,
-    morphology: legacyMorphology[identity.animation],
-    material: identity.grain ? "frost" : legacyMaterial[identity.background],
+    background: identity.background,
+    rotateBackground: identity.rotateBackground ?? false,
+    grain: identity.grain ?? false,
+    animation: identity.animation,
+    palette: {
+      ...identity.palette,
+      colors: [...identity.palette.colors],
+    },
+    seed: identity.seed >>> 0,
+  };
+}
+
+export function migrateTopologyPreviewIdentity(identity: TopologyPreviewIdentity): AvatarIdentity {
+  return {
+    name: identity.name,
+    background: topologyBackground[identity.material],
+    rotateBackground: identity.material === "glass",
+    grain: identity.material === "frost",
+    animation: topologyAnimation[identity.morphology],
     palette: {
       ...identity.palette,
       colors: [...identity.palette.colors],
@@ -257,13 +342,16 @@ export function parseIdentityDocument(value: unknown): IdentityDocumentResult {
       error: { code: "UNSUPPORTED_VERSION", message: `Identity version ${String(value.version)} is not supported.` },
     };
   }
-  if (!isAvatarIdentity(value.identity)) {
-    return {
-      success: false,
-      error: { code: "INVALID_IDENTITY", message: "The identity configuration is incomplete or invalid." },
-    };
+  if (isAvatarIdentity(value.identity)) {
+    return { success: true, data: value as unknown as OrbsonaIdentityDocument };
   }
-  return { success: true, data: value as unknown as OrbsonaIdentityDocument };
+  if (isTopologyPreviewIdentity(value.identity)) {
+    return { success: true, data: createIdentityDocument(migrateTopologyPreviewIdentity(value.identity)) };
+  }
+  return {
+    success: false,
+    error: { code: "INVALID_IDENTITY", message: "The identity configuration is incomplete or invalid." },
+  };
 }
 
 export function parseIdentityJson(json: string): IdentityDocumentResult {
@@ -283,26 +371,39 @@ export function serializeIdentity(identity: AvatarIdentity): string {
 
 export function identityFromSeed(
   seed: number,
-): Pick<AvatarIdentity, "morphology" | "material" | "palette" | "seed"> {
+): Pick<AvatarIdentity, "background" | "animation" | "palette" | "seed"> {
+  return deriveIdentityFromSeed(seed, V1_SEED_ANIMATIONS);
+}
+
+/** Derive an identity from the expanded v2 catalog without remapping v1 seeds. */
+export function identityFromSeedV2(
+  seed: number,
+): Pick<AvatarIdentity, "background" | "animation" | "palette" | "seed"> {
+  return deriveIdentityFromSeed(seed, V2_SEED_ANIMATIONS);
+}
+
+function deriveIdentityFromSeed(
+  seed: number,
+  animationCatalog: readonly AvatarAnimation[],
+): Pick<AvatarIdentity, "background" | "animation" | "palette" | "seed"> {
   const normalizedSeed = seed >>> 0;
-  const morphology = V2_SEED_MORPHOLOGIES[normalizedSeed % V2_SEED_MORPHOLOGIES.length];
-  const material = V2_SEED_MATERIALS[
-    Math.floor(normalizedSeed / V2_SEED_MORPHOLOGIES.length) % V2_SEED_MATERIALS.length
+  const background = V1_SEED_BACKGROUNDS[normalizedSeed % V1_SEED_BACKGROUNDS.length];
+  const animation = animationCatalog[
+    Math.floor(normalizedSeed / V1_SEED_BACKGROUNDS.length) % animationCatalog.length
   ];
-  const paletteId = V2_SEED_PALETTES[
-    Math.floor(
-      normalizedSeed / (V2_SEED_MORPHOLOGIES.length * V2_SEED_MATERIALS.length),
-    ) % V2_SEED_PALETTES.length
+  const paletteId = V1_SEED_PALETTES[
+    Math.floor(normalizedSeed / (V1_SEED_BACKGROUNDS.length * animationCatalog.length))
+      % V1_SEED_PALETTES.length
   ];
   const palette = palettes.find(({ id }) => id === paletteId);
   if (!palette) {
-    throw new Error(`Orbsona v2 palette "${paletteId}" is missing from the catalog.`);
+    throw new Error(`Orbsona palette "${paletteId}" is missing from the catalog.`);
   }
 
   return {
     seed: normalizedSeed,
-    morphology,
-    material,
+    background,
+    animation,
     palette: {
       ...palette,
       colors: [...palette.colors],

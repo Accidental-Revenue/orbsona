@@ -57,13 +57,13 @@ test("round-trips the portable identity document", async ({ page }) => {
     version: 2,
     identity: {
       name: "Aster",
-      morphology: "basin",
-      material: "mineral",
+      background: "relief",
+      animation: "field",
       seed: 2718,
     },
   });
-  expect(payload.identity).not.toHaveProperty("background");
-  expect(payload.identity).not.toHaveProperty("animation");
+  expect(payload.identity).not.toHaveProperty("morphology");
+  expect(payload.identity).not.toHaveProperty("material");
 });
 
 test("migrates a version 1 identity file into the v2 editor", async ({ page }) => {
@@ -87,37 +87,37 @@ test("migrates a version 1 identity file into the v2 editor", async ({ page }) =
   });
 
   await expect(page.getByRole("textbox", { name: "Agent name" })).toHaveValue("Legacy");
-  await expect(page.getByRole("button", { name: "Current" })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: "Glass" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Currents" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Wave" })).toHaveAttribute("aria-pressed", "true");
 });
 
-test("every morphology and material produces a distinct rendered identity", async ({ page }) => {
+test("every background and motion system produces a distinct rendered identity", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   const canvas = page.locator("[data-studio-avatar] canvas");
   const signature = () => canvas.evaluate((element) => (element as HTMLCanvasElement).toDataURL());
-  const morphologySignatures = new Set<string>();
-  for (const name of ["Basin", "Ridge", "Archipelago", "Fault", "Cellular", "Pleat", "Current", "Chorus"]) {
+  const animationSignatures = new Set<string>();
+  for (const name of ["Phyllotaxis", "Radiolaria", "Field", "Orbit", "Globe", "Wave", "Solve", "Pulse"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await page.waitForTimeout(80);
     await expect(canvas).toHaveAttribute("data-avatar-ready", "true");
-    morphologySignatures.add(await signature());
+    animationSignatures.add(await signature());
   }
-  expect(morphologySignatures.size).toBe(8);
+  expect(animationSignatures.size).toBe(8);
 
-  const materialSignatures = new Set<string>();
-  for (const name of ["Mineral", "Glass", "Ink", "Frost"]) {
+  const backgroundSignatures = new Set<string>();
+  for (const name of ["Relief", "Dunes", "Strata", "Currents"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await page.waitForTimeout(80);
     await expect(canvas).toHaveAttribute("data-avatar-ready", "true");
-    materialSignatures.add(await signature());
+    backgroundSignatures.add(await signature());
   }
-  expect(materialSignatures.size).toBe(4);
+  expect(backgroundSignatures.size).toBe(4);
 });
 
-test("keeps the default live topology inside its frame budget", async ({ page, browserName }) => {
+test("keeps the default layered renderer inside its frame budget", async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "Long-task timing is standardized in Chromium for this gate.");
   const canvas = page.locator("[data-studio-avatar] canvas");
-  await expect(canvas).toHaveAttribute("data-avatar-topology-resolution", "112");
+  await expect(canvas).toHaveAttribute("data-avatar-preset-size", "64");
   const result = await page.evaluate(async () => {
     const durations: number[] = [];
     const observer = "PerformanceObserver" in window
@@ -149,6 +149,25 @@ test("keeps the default live topology inside its frame budget", async ({ page, b
   // states. Shared CI runners can schedule rAF at that same cadence.
   expect(result.averageFrame).toBeLessThan(42);
   expect(result.longestTask).toBeLessThan(120);
+});
+
+test("clips the complete composition to the avatar circle", async ({ page }) => {
+  await page.getByRole("button", { name: "Radiolaria", exact: true }).click();
+  const canvas = page.locator("[data-studio-avatar] canvas");
+  await expect(canvas).toHaveAttribute("data-avatar-ready", "true");
+  const samples = await canvas.evaluate((element) => {
+    const target = element as HTMLCanvasElement;
+    const context = target.getContext("2d", { willReadFrequently: true });
+    if (!context) throw new Error("Canvas context is unavailable");
+    const points = [
+      [0, 0],
+      [target.width - 1, 0],
+      [0, target.height - 1],
+      [target.width - 1, target.height - 1],
+    ];
+    return points.map(([x, y]) => context.getImageData(x, y, 1, 1).data[3]);
+  });
+  expect(samples).toEqual([0, 0, 0, 0]);
 });
 
 test("records WebM or explains browser support", async ({ page }) => {

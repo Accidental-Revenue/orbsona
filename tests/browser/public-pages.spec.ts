@@ -17,12 +17,15 @@ for (const { path, heading } of pages) {
   });
 }
 
-test("install and documentation advertise the published patch", async ({ page }) => {
+test("install and documentation link to the public package without claiming an unpublished version", async ({ page }) => {
   await page.goto("/install");
-  await expect(page.getByText("v0.2.0 · public on npm")).toBeVisible();
+  await expect(page.getByRole("link", { name: "View on npm" })).toHaveAttribute(
+    "href",
+    "https://www.npmjs.com/package/@accidental-revenue/orbsona",
+  );
 
   await page.goto("/docs");
-  await expect(page.getByText("Public npm package · v0.2.0")).toBeVisible();
+  await expect(page.getByText("Public npm package", { exact: true })).toBeVisible();
 });
 
 test("documentation offers a package-manager picker with quick copy", async ({
@@ -60,5 +63,6 @@ test("the Playground drives all runtime states and signal energy", async ({ page
   await expect(page.getByText("1.00", { exact: true })).toBeVisible();
   const canvas = runtimeAvatar.locator("canvas");
   await expect(canvas).toHaveAttribute("data-avatar-ready", "true", { timeout: 10_000 });
-  await expect(canvas).toHaveAttribute("data-avatar-topology-resolution", "144");
+  await expect(canvas).toHaveAttribute("data-avatar-preset-size", "64");
+  await expect(canvas).toHaveAttribute("data-avatar-animation", "field");
 });

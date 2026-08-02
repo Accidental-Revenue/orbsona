@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   AgentState,
   AvatarIdentity,
-  identityFromSeed,
+  identityFromSeedV2,
   initialIdentity,
   parseIdentityJson,
   serializeIdentity,
@@ -163,13 +163,13 @@ export function AvatarStudio() {
   }
 
   function randomizeAppearance() {
-    let randomized = identityFromSeed(createRandomSeed());
+    let randomized = identityFromSeedV2(createRandomSeed());
     for (let attempt = 0; attempt < 7; attempt += 1) {
-      const hasChanged = randomized.morphology !== identity.morphology
-        || randomized.material !== identity.material
+      const hasChanged = randomized.background !== identity.background
+        || randomized.animation !== identity.animation
         || randomized.palette.id !== identity.palette.id;
       if (hasChanged) break;
-      randomized = identityFromSeed(createRandomSeed());
+      randomized = identityFromSeedV2(createRandomSeed());
     }
 
     draftDirtyRef.current = true;

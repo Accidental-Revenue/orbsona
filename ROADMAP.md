@@ -18,7 +18,7 @@ This roadmap is directional. Evidence from real integrations can reorder it.
 ### Ship and protect the public package
 
 - Release v0.1.1 with compact avatar rendering, fixed 512 × 512 PNG export, exposed seeds, and the frozen v1 seed contract.
-- Release v0.2.0 with the original Living Topographies renderer, eight morphologies, four materials, and v1 identity migration.
+- Release v0.2.0 with restored layered motion, original Phyllotaxis and Radiolaria systems, four relief families, complete attribution, and v1 identity migration.
 - Gate pull requests with lint, package tests, the production build, and critical browser journeys.
 - Run Firefox and WebKit journeys on a scheduled workflow if the main CI gate becomes too slow.
 - Add trusted npm publishing with provenance after the repository and npm organization are connected.
@@ -41,7 +41,8 @@ This roadmap is directional. Evidence from real integrations can reorder it.
 
 ### Grow the v2 identity system
 
-- Extend the versioned derivation algorithm so future palettes, morphologies, and materials can be added without remapping existing v2 seeds.
+- Extend the versioned derivation algorithm so future palettes, reliefs, and nature systems can be added without remapping existing v2 seeds.
+- Explore additional original systems only after their small-size legibility, state response, and performance meet the same release gate: mycelial transport, slime-mold networks, and reaction-diffusion waves are candidates rather than promises.
 - Publish the v1-to-v2 migration table and compatibility fixtures as part of the maintained contract.
 - Introduce a stable visual fingerprint for reproduction and debugging. It is not a uniqueness or ownership claim.
 

@@ -2,7 +2,7 @@
 
 Date: 2026-08-02
 
-Status: accepted
+Status: superseded by ADR-004 before public release
 
 ## Context
 

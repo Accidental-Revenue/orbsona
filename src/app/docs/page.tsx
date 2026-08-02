@@ -10,8 +10,8 @@ import {
 } from "@tabler/icons-react";
 import type { Metadata } from "next";
 import {
-  materials,
-  morphologies,
+  animations,
+  backgrounds,
   ORBSONA_IDENTITY_FORMAT,
   ORBSONA_IDENTITY_VERSION,
   runtimeStates,
@@ -32,8 +32,10 @@ const identityExample = `{
   "version": ${ORBSONA_IDENTITY_VERSION},
   "identity": {
     "name": "Aster",
-    "morphology": "basin",
-    "material": "mineral",
+    "background": "relief",
+    "rotateBackground": false,
+    "grain": false,
+    "animation": "phyllotaxis",
     "palette": {
       "id": "ion",
       "name": "Ion",
@@ -108,7 +110,7 @@ export default function DocumentationPage() {
               An agent identity is a stateful interface, not a profile image.
             </h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-400">
-              Orbsona separates a stable visual identity from live runtime state. Morphology, material, palette, and seed remain recognizable while one continuous surface responds to what the agent is doing.
+              Orbsona separates a stable visual identity from live runtime state. Relief, motion system, palette, and seed remain recognizable while the composition responds to what the agent is doing.
             </p>
           </div>
 
@@ -124,31 +126,36 @@ export default function DocumentationPage() {
             ))}
           </section>
 
-          <section className="mt-8" aria-labelledby="living-topographies">
-            <p className="text-sm font-medium text-neutral-500">Original rendering system</p>
-            <h2 id="living-topographies" className="mt-1 font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">Living Topographies</h2>
+          <section className="mt-8" aria-labelledby="layered-organisms">
+            <p className="text-sm font-medium text-neutral-500">Layered identity system</p>
+            <h2 id="layered-organisms" className="mt-1 font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">Relief meets living geometry</h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-neutral-500">
-              Morphology defines a deterministic terrain. Material defines how light meets it. Runtime state deforms that same surface, so an agent stays recognizable while its behavior changes.
+              A deterministic relief establishes the agent’s body. A foreground motion system establishes its behavior. Orbsona’s new presets translate structures found in living systems into reproducible geometry, while the original <a href="https://github.com/Jakubantalik/thinking-orbs" target="_blank" rel="noreferrer" className="text-neutral-300 underline decoration-white/20 underline-offset-4 hover:text-white">thinking-orbs</a> collection remains available under its MIT license.
             </p>
             <div className="mt-4 grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
               <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5">
-                <h3 className="text-base font-semibold text-neutral-200">Eight morphologies</h3>
+                <h3 className="text-base font-semibold text-neutral-200">Motion systems</h3>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {morphologies.map((morphology) => (
-                    <div key={morphology.id} className="rounded-xl border border-white/[0.08] bg-black/15 p-4">
-                      <code className="font-mono text-xs text-neutral-300">{morphology.id}</code>
-                      <p className="mt-1 text-sm leading-6 text-neutral-500">{morphology.description}</p>
+                  {animations.map((animation) => (
+                    <div key={animation.id} className="rounded-xl border border-white/[0.08] bg-black/15 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <code className="font-mono text-xs text-neutral-300">{animation.id}</code>
+                        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-neutral-600">
+                          {animation.origin === "orbsona" ? "Orbsona" : "MIT collection"}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm leading-6 text-neutral-500">{animation.description}</p>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5">
-                <h3 className="text-base font-semibold text-neutral-200">Four materials</h3>
+                <h3 className="text-base font-semibold text-neutral-200">Relief families</h3>
                 <div className="mt-4 grid gap-3">
-                  {materials.map((material) => (
-                    <div key={material.id} className="rounded-xl border border-white/[0.08] bg-black/15 p-4">
-                      <code className="font-mono text-xs text-neutral-300">{material.id}</code>
-                      <p className="mt-1 text-sm leading-6 text-neutral-500">{material.description}</p>
+                  {backgrounds.map((background) => (
+                    <div key={background.id} className="rounded-xl border border-white/[0.08] bg-black/15 p-4">
+                      <code className="font-mono text-xs text-neutral-300">{background.id}</code>
+                      <p className="mt-1 text-sm leading-6 text-neutral-500">{background.description}</p>
                     </div>
                   ))}
                 </div>
@@ -162,7 +169,7 @@ export default function DocumentationPage() {
                 <IconPackage size={20} stroke={1.6} aria-hidden="true" />
               </span>
               <div>
-                <p className="text-sm font-medium text-neutral-500">Public npm package · v0.2.0</p>
+                <p className="text-sm font-medium text-neutral-500">Public npm package</p>
                 <h2 id="install-package" className="font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">Install the renderer</h2>
               </div>
             </div>
@@ -248,6 +255,7 @@ export default function DocumentationPage() {
                 <li><strong className="font-medium text-neutral-300">Bounded rendering.</strong> The canvas caps pixel density to avoid unnecessary GPU work.</li>
                 <li><strong className="font-medium text-neutral-300">Semantic state.</strong> Provider events map to a small, stable set of agent states.</li>
                 <li><strong className="font-medium text-neutral-300">Versioned files.</strong> Version 1 identities migrate deterministically; unknown versions are rejected safely.</li>
+                <li><strong className="font-medium text-neutral-300">Stable seeds.</strong> <code className="font-mono text-xs">identityFromSeed</code> retains the v1 mapping; <code className="font-mono text-xs">identityFromSeedV2</code> opts into the expanded catalog.</li>
               </ul>
             </div>
           </section>

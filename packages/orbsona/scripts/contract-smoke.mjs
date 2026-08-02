@@ -39,37 +39,11 @@ assert.deepEqual(parseIdentityDocument({
 }), {
   success: true,
   data: createIdentityDocument({
-    ...initialIdentity,
-    morphology: "ridge",
-    material: "mineral",
+    ...legacyIdentity,
+    rotateBackground: false,
+    grain: false,
   }),
-}, "v1 identities must migrate into the v2 topology contract");
-
-const effectsIdentity = {
-  ...legacyIdentity,
-  rotateBackground: true,
-  grain: true,
-};
-assert.deepEqual(
-  parseIdentityDocument({
-    format: "orbsona.identity",
-    version: 1,
-    identity: effectsIdentity,
-  }),
-  {
-    success: true,
-    data: createIdentityDocument({
-      ...initialIdentity,
-      morphology: "ridge",
-      material: "frost",
-    }),
-  },
-);
-assert.equal(parseIdentityDocument({
-  format: "orbsona.identity",
-  version: 1,
-  identity: { ...legacyIdentity, grain: "yes" },
-}).success, false);
+}, "v1 identities must preserve their layered appearance in v2");
 
 function settledFrame(state, signal) {
   const runtime = createMotionRuntime(state);

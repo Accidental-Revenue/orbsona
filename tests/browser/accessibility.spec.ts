@@ -9,9 +9,9 @@ test.beforeEach(async ({ page }) => {
 test("exposes the avatar and Studio controls with semantic names", async ({ page }) => {
   await expect(page.getByRole("img", { name: "Aster avatar, idle state" }).first()).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Agent name" })).toBeVisible();
-  await expect(page.getByRole("group", { name: "Morphology" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Background" })).toBeVisible();
   await expect(page.getByRole("group", { name: "Palette" })).toBeVisible();
-  await expect(page.getByRole("group", { name: "Material" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Animation" })).toBeVisible();
   await expect(page.getByRole("radiogroup", { name: "Agent state" })).toBeVisible();
 });
 
@@ -36,7 +36,7 @@ test("keeps all public routes free of browser errors and warnings", async ({ pag
   page.on("pageerror", (error) => messages.push(`pageerror: ${error.message}`));
 
   for (const route of ["/", "/playground", "/install", "/docs"]) {
-    await page.goto(route);
+    await page.goto(route, { waitUntil: "networkidle" });
     await page.locator("main").waitFor({ state: "visible" });
   }
   expect(messages).toEqual([]);
