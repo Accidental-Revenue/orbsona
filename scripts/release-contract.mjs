@@ -22,6 +22,11 @@ assert.match(
 );
 assert.match(releaseWorkflow, /npm pack --dry-run/);
 assert.match(releaseWorkflow, /npm view ["']@accidental-revenue\/orbsona@\$PACKAGE_VERSION["'] version/);
+assert.match(
+  releaseWorkflow,
+  /for attempt in \{1\.\.12\}/,
+  "registry verification must tolerate normal npm propagation delay",
+);
 assert.match(releaseWorkflow, /npm ci --strict-allow-scripts/);
 assert.match(ciWorkflow, /npm install --global npm@11\.17\.0/);
 assert.match(ciWorkflow, /npm ci --strict-allow-scripts/);

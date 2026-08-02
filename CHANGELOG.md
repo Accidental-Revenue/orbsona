@@ -4,6 +4,12 @@ All notable changes to Orbsona are documented here. The project follows semantic
 
 ## [Unreleased]
 
+### Fixed
+
+- Tolerate npm propagation delay when verifying a newly published release.
+
+## [0.2.0] - 2026-08-02
+
 ### Changed
 
 - Restore the layered relief and foreground animations used by existing identities.
@@ -49,6 +55,7 @@ All notable changes to Orbsona are documented here. The project follows semantic
 
 - First public release of the identity contract, React renderer, local-first Studio, Playground, Install, and Documentation.
 
-[Unreleased]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/Accidental-Revenue/orbsona/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Accidental-Revenue/orbsona/releases/tag/v0.1.0

@@ -63,5 +63,14 @@ jobs:
       - name: Verify registry release
         run: |
           PACKAGE_VERSION=$(node --print "require('./packages/orbsona/package.json').version")
-          PUBLISHED_VERSION=$(npm view "@accidental-revenue/orbsona@$PACKAGE_VERSION" version)
-          test "$PUBLISHED_VERSION" = "$PACKAGE_VERSION"
+          for attempt in {1..12}; do
+            PUBLISHED_VERSION=$(npm view "@accidental-revenue/orbsona@$PACKAGE_VERSION" version 2>/dev/null || true)
+            if [ "$PUBLISHED_VERSION" = "$PACKAGE_VERSION" ]; then
+              echo "Verified @accidental-revenue/orbsona@$PACKAGE_VERSION from npm."
+              exit 0
+            fi
+            echo "Registry has not propagated attempt $attempt/12; retrying in 5 seconds."
+            sleep 5
+          done
+          echo "Published version did not become readable from npm within 60 seconds."
+          exit 1

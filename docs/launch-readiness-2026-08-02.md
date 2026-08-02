@@ -3,9 +3,9 @@
 Date: 2026-08-02  
 Scope: public website, browser-local Studio, React package, release automation, dependency supply chain, and npm/Vercel launch sequence.
 
-## Candidate status
+## Audit-time candidate status
 
-The local 0.2.0 candidate passes every code-controlled release gate. It has not been published or promoted to production. At audit time, npm `latest` is 0.1.1 and version 0.2.0 does not exist in the registry.
+At the time of this audit, the local 0.2.0 candidate passed every code-controlled release gate but had not yet been published or promoted to production. npm `latest` was 0.1.1 and version 0.2.0 did not exist in the registry. This report intentionally preserves that pre-promotion evidence; current release status is authoritative in npm, GitHub, and Vercel.
 
 Production promotion remains intentionally gated on:
 

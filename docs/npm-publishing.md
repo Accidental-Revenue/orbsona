@@ -29,7 +29,7 @@ In the npm package settings for `@accidental-revenue/orbsona`, add a trusted pub
 - environment: leave empty unless the workflow is later assigned one
 - allowed actions: `npm publish`
 
-After the trusted publisher is saved, create and push a tag that exactly matches the version in `packages/orbsona/package.json`, then run **Publish package** from that tag. The workflow refuses branches, mismatched tags, and versions that already exist on npm. It verifies lint, package and release contracts, the production build, dependency audit, and packed contents before publishing; it then verifies the exact version from the registry.
+After the trusted publisher is saved, create and push a tag that exactly matches the version in `packages/orbsona/package.json`, then run **Publish package** from that tag. The workflow refuses branches, mismatched tags, and versions that already exist on npm. It verifies lint, package and release contracts, the production build, dependency audit, and packed contents before publishing; it then retries the registry read for up to one minute and verifies the exact published version.
 
 ```bash
 PACKAGE_VERSION=$(node --print "require('./packages/orbsona/package.json').version")
