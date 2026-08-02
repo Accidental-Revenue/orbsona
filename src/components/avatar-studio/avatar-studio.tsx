@@ -295,7 +295,7 @@ export function AvatarStudio() {
   return (
     <div
       id="studio-workspace"
-      className="studio-shell grid h-full grid-rows-[minmax(0,1fr)_min(560px,62dvh)] gap-3 xl:grid-cols-[minmax(0,1fr)_400px] xl:grid-rows-1"
+      className="studio-shell grid h-full grid-rows-[minmax(0,1fr)_min(560px,34dvh)] gap-3 xl:grid-cols-[minmax(0,1fr)_400px] xl:grid-rows-1"
     >
       <section id="studio-preview" className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-3xl border border-white/[0.1] bg-neutral-900/60 shadow-[0_16px_50px_rgba(0,0,0,0.28)]">
         <header className="flex h-20 shrink-0 items-center justify-between border-b border-white/[0.1] px-4 sm:px-6">

@@ -12,7 +12,6 @@ export const IDENTITY_DRAFT_EVENT = "orbsona:identity-draft-change";
 const IDENTITY_DRAFT_KEY = "orbsona:identity";
 
 function notifyDraftChange() {
-  window.dispatchEvent(new Event("orbsona:identity-change"));
   window.dispatchEvent(new Event(IDENTITY_DRAFT_EVENT));
 }
 

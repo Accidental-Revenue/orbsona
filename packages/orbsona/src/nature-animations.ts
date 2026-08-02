@@ -1,4 +1,5 @@
 import type { AvatarAnimation } from "./index.js";
+import { BoundedCache } from "./bounded-cache.js";
 
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 
@@ -84,8 +85,9 @@ export function createRadiolariaMesh(count: number, seed: number): RadiolariaMes
   return { nodes, edges };
 }
 
-const phyllotaxisCache = new Map<string, PhyllotaxisPoint[]>();
-const radiolariaCache = new Map<string, RadiolariaMesh>();
+const GEOMETRY_CACHE_LIMIT = 64;
+const phyllotaxisCache = new BoundedCache<string, PhyllotaxisPoint[]>(GEOMETRY_CACHE_LIMIT);
+const radiolariaCache = new BoundedCache<string, RadiolariaMesh>(GEOMETRY_CACHE_LIMIT);
 
 function phyllotaxisPoints(count: number, seed: number) {
   const key = `${count}:${seed}`;

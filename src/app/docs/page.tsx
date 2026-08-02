@@ -246,7 +246,7 @@ export default function DocumentationPage() {
                 <IconFileCode size={20} stroke={1.6} className="text-neutral-400" aria-hidden="true" />
                 <h2 id="identity-file" className="font-display text-xl font-semibold text-neutral-100">Portable identity file</h2>
               </div>
-              <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-6 text-neutral-300"><code>{identityExample}</code></pre>
+              <pre tabIndex={0} aria-label="Orbsona identity JSON example" className="overflow-x-auto p-5 font-mono text-[13px] leading-6 text-neutral-300"><code>{identityExample}</code></pre>
             </div>
             <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5">
               <h3 className="font-display text-xl font-semibold text-neutral-100">Rendering guarantees</h3>

@@ -46,7 +46,7 @@ The stable identity controls recognition. Semantic state and signal levels contr
 | `className` | `string` | Class name applied to the canvas wrapper |
 | `style` | `CSSProperties` | Inline styles applied to the canvas wrapper |
 
-When `inputLevel` and `outputLevel` are omitted, `energy` drives both.
+When `inputLevel` and `outputLevel` are omitted, `energy` drives both. Signal values are normalized to the `0…1` range; non-finite values are treated as zero so an invalid provider sample cannot poison the animation state.
 
 ## Runtime states
 
@@ -113,6 +113,7 @@ The two sources are identified in the exported animation catalog. Full attributi
 - Respects `prefers-reduced-motion`.
 - Caps canvas pixel density at 2x.
 - Uses compact density at 20–32 pixels and the full preset at larger sizes.
+- Updates motion on the browser display cadence instead of imposing a lower frame-rate cap.
 - Pauses work when the avatar or browser tab is not visible.
 - Masks background, foreground motion, glow, and state effects to one circular boundary.
 - Keeps relief and foreground motion independently configurable.

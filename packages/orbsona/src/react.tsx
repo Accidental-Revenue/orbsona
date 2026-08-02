@@ -130,7 +130,6 @@ export function AgentAvatar({
     let dpr = 1;
     let lastTimestamp = 0;
     let renderConfig = resolveAnimationPreset(stableIdentity.animation, 64);
-    const frameInterval = 1_000 / (state === "idle" ? 24 : 30);
 
     const resize = () => {
       const bounds = canvas.getBoundingClientRect();
@@ -149,11 +148,6 @@ export function AgentAvatar({
     };
 
     const draw = (timestamp: number) => {
-      if (!reduceMotion && lastTimestamp > 0 && timestamp - lastTimestamp < frameInterval) {
-        if (visible && document.visibilityState === "visible") frame = requestAnimationFrame(draw);
-        return;
-      }
-
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       context.clearRect(0, 0, cssSize, cssSize);
       const backgroundRotation = stableIdentity.rotateBackground && !reduceMotion

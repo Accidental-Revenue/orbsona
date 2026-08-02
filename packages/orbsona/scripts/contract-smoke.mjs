@@ -12,10 +12,19 @@ import { createMotionRuntime, updateMotion } from "../dist/orb-motion.js";
 const document = createIdentityDocument(initialIdentity);
 assert.equal(document.format, "orbsona.identity");
 assert.equal(document.version, 2);
+assert.notEqual(document.identity, initialIdentity, "identity documents must own a defensive copy");
+assert.notEqual(document.identity.palette, initialIdentity.palette, "nested palette data must be copied");
 assert.deepEqual(parseIdentityJson(serializeIdentity(initialIdentity)), {
   success: true,
   data: document,
 });
+
+const parsedWithUnknownFields = parseIdentityDocument({
+  ...document,
+  identity: { ...document.identity, internalNote: "must not cross the public contract" },
+});
+assert.equal(parsedWithUnknownFields.success, true);
+assert.equal("internalNote" in parsedWithUnknownFields.data.identity, false);
 
 const wrongVersion = parseIdentityDocument({ ...document, version: 3 });
 assert.equal(wrongVersion.success, false);
@@ -63,6 +72,13 @@ assert.ok(energeticIdle.scale - quietIdle.scale > 0.02, "energy must visibly aff
 const quietListening = settledFrame("listening", 0);
 const energeticListening = settledFrame("listening", 1);
 assert.ok(energeticListening.scale - quietListening.scale > 0.1, "input energy must visibly open the listening pose");
+
+const invalidSignal = settledFrame("speaking", Number.NaN);
+for (const [key, value] of Object.entries(invalidSignal)) {
+  if (typeof value === "number") {
+    assert.ok(Number.isFinite(value), `invalid external signal levels must not poison motion field ${key}`);
+  }
+}
 
 const rendererSource = readFileSync(new URL("../dist/react.js", import.meta.url), "utf8");
 assert.doesNotMatch(rendererSource, /\bh-full\b|\bw-full\b/, "the published renderer must not require Tailwind CSS");

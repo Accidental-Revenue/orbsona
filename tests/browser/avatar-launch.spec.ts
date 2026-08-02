@@ -114,11 +114,65 @@ test("every background and motion system produces a distinct rendered identity",
   expect(backgroundSignatures.size).toBe(4);
 });
 
-test("keeps the default layered renderer inside its frame budget", async ({ page, browserName }) => {
-  test.skip(browserName !== "chromium", "Long-task timing is standardized in Chromium for this gate.");
+test("background rotation and grain produce visible, independent finishes", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const canvas = page.locator("[data-studio-avatar] canvas");
+  await expect(canvas).toHaveAttribute("data-avatar-ready", "true");
+  const signature = () => canvas.evaluate((element) => (element as HTMLCanvasElement).toDataURL());
+  const base = await signature();
+
+  await page.getByText("Rotate", { exact: true }).click();
+  await expect.poll(signature).not.toBe(base);
+  const rotated = await signature();
+
+  await page.getByText("Grain", { exact: true }).click();
+  await expect.poll(signature).not.toBe(rotated);
+});
+
+test("keeps one live browser draft and only clears it after confirmation", async ({ page }) => {
+  await page.getByRole("textbox", { name: "Agent name" }).fill("Nova");
+  await expect(page.getByText("Saved in this browser").first()).toBeVisible();
+  const draftPreview = page.locator("[data-browser-draft-preview]");
+  await expect(draftPreview).toContainText("Nova");
+  await expect(draftPreview.locator("canvas")).toHaveAttribute("data-avatar-ready", "true");
+
+  await page.getByRole("button", { name: "New", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Start a new draft?" })).toBeVisible();
+  await page.getByRole("button", { name: "Keep draft" }).click();
+  await expect(page.getByRole("textbox", { name: "Agent name" })).toHaveValue("Nova");
+
+  await page.getByRole("button", { name: "New", exact: true }).click();
+  await page.getByRole("button", { name: "Start fresh" }).click();
+  await expect(page.getByRole("textbox", { name: "Agent name" })).toHaveValue("Aster");
+  expect(await page.evaluate(() => window.localStorage.getItem("orbsona:identity"))).toBeNull();
+});
+
+test("rejects invalid identity imports without replacing the current draft", async ({ page }) => {
+  const chooserPromise = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Import" }).click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: "invalid.orbsona.json",
+    mimeType: "application/json",
+    buffer: Buffer.from("{ definitely not valid json"),
+  });
+
+  await expect(page.getByText("The identity file contains invalid JSON.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Agent name" })).toHaveValue("Aster");
+});
+
+test("renders idle and active animation frames at display cadence", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "Canvas cadence and long-task timing are gated in Chromium.");
   const canvas = page.locator("[data-studio-avatar] canvas");
   await expect(canvas).toHaveAttribute("data-avatar-preset-size", "64");
-  const result = await page.evaluate(async () => {
+  const measureCanvasCadence = () => canvas.evaluate(async (element) => {
+    const source = element as HTMLCanvasElement;
+    const sampleCanvas = document.createElement("canvas");
+    sampleCanvas.width = 12;
+    sampleCanvas.height = 12;
+    const sampleContext = sampleCanvas.getContext("2d", { willReadFrequently: true });
+    if (!sampleContext) throw new Error("Canvas sampling context is unavailable");
+
     const durations: number[] = [];
     const observer = "PerformanceObserver" in window
       ? new PerformanceObserver((list) => {
@@ -126,29 +180,48 @@ test("keeps the default layered renderer inside its frame budget", async ({ page
         })
       : null;
     observer?.observe({ type: "longtask", buffered: false });
-    const intervals: number[] = [];
+
+    const hashes: number[] = [];
+    const changedAt: number[] = [];
     await new Promise<void>((resolve) => {
-      let previous = performance.now();
+      let previousHash: number | undefined;
       const sample = (now: number) => {
-        intervals.push(now - previous);
-        previous = now;
-        if (intervals.length < 90) requestAnimationFrame(sample);
+        sampleContext.clearRect(0, 0, 12, 12);
+        sampleContext.drawImage(source, 0, 0, 12, 12);
+        const pixels = sampleContext.getImageData(0, 0, 12, 12).data;
+        let hash = 2166136261;
+        for (let index = 0; index < pixels.length; index += 4) {
+          hash ^= pixels[index] + pixels[index + 1] * 3 + pixels[index + 2] * 7 + pixels[index + 3] * 11;
+          hash = Math.imul(hash, 16777619);
+        }
+        hashes.push(hash >>> 0);
+        if (previousHash !== undefined && hash !== previousHash) changedAt.push(now);
+        previousHash = hash;
+        if (hashes.length < 120) requestAnimationFrame(sample);
         else resolve();
       };
       requestAnimationFrame(sample);
     });
     observer?.disconnect();
-    const stable = intervals.slice(10);
+
+    const stableChanges = changedAt.filter((timestamp) => timestamp >= changedAt[0] + 150);
+    const drawGaps = stableChanges.slice(1).map((timestamp, index) => timestamp - stableChanges[index]);
     return {
-      averageFrame: stable.reduce((total, value) => total + value, 0) / stable.length,
+      changedFrameRatio: changedAt.length / (hashes.length - 1),
+      averageDrawGap: drawGaps.reduce((total, value) => total + value, 0) / drawGaps.length,
       longestTask: Math.max(0, ...durations),
     };
   });
 
-  // The renderer intentionally targets 24 fps at idle and 30 fps in active
-  // states. Shared CI runners can schedule rAF at that same cadence.
-  expect(result.averageFrame).toBeLessThan(42);
-  expect(result.longestTask).toBeLessThan(120);
+  const idle = await measureCanvasCadence();
+  await page.getByRole("radio", { name: "Speaking" }).click();
+  const speaking = await measureCanvasCadence();
+
+  for (const result of [idle, speaking]) {
+    expect(result.changedFrameRatio).toBeGreaterThan(0.75);
+    expect(result.averageDrawGap).toBeLessThan(25);
+    expect(result.longestTask).toBeLessThan(120);
+  }
 });
 
 test("clips the complete composition to the avatar circle", async ({ page }) => {

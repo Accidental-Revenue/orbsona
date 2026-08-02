@@ -65,16 +65,16 @@ export function PackageGuide() {
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5 sm:p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
+        <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="min-w-0 rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5 sm:p-6">
+            <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">
+              <div className="flex min-w-0 items-start gap-4">
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-white/[0.1] bg-white/[0.04] text-neutral-300">
                   <IconPackage size={21} stroke={1.6} aria-hidden="true" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-neutral-500">React renderer</p>
-                  <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.03em] text-neutral-100">@accidental-revenue/orbsona</h2>
+                  <h2 className="mt-1 break-all font-display text-xl font-semibold tracking-[-0.03em] text-neutral-100 sm:text-2xl">@accidental-revenue/orbsona</h2>
                 </div>
               </div>
               <a
@@ -92,7 +92,7 @@ export function PackageGuide() {
             <InstallCommand className="mt-5" />
           </div>
 
-          <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5 sm:p-6">
+          <div className="min-w-0 rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5 sm:p-6">
             <div className="flex items-center gap-3">
               <IconLockOpen size={20} stroke={1.6} className="text-neutral-400" aria-hidden="true" />
               <h2 className="font-display text-xl font-semibold text-neutral-100">Open source · MIT</h2>
@@ -109,8 +109,8 @@ export function PackageGuide() {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="overflow-hidden rounded-2xl border border-white/[0.1] bg-black/20">
+        <div className="mt-5 grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="min-w-0 overflow-hidden rounded-2xl border border-white/[0.1] bg-black/20">
             <div className="flex items-start justify-between gap-4 border-b border-white/[0.1] p-5">
               <div>
                 <h2 className="font-display text-xl font-semibold text-neutral-100">Render the identity</h2>
@@ -122,10 +122,10 @@ export function PackageGuide() {
                 onClick={() => copy(componentExample, "component")}
               />
             </div>
-            <pre className="max-h-[430px] overflow-auto p-5 font-mono text-[13px] leading-6 text-neutral-300"><code>{componentExample}</code></pre>
+            <pre tabIndex={0} aria-label="React component example" className="max-h-[430px] overflow-auto p-5 font-mono text-[13px] leading-6 text-neutral-300"><code>{componentExample}</code></pre>
           </div>
 
-          <div className="grid content-start gap-5">
+          <div className="grid min-w-0 content-start gap-5">
             <div className="rounded-2xl border border-white/[0.1] bg-white/[0.025] p-5">
               <div className="flex items-center gap-3">
                 <IconBrackets size={20} stroke={1.6} className="text-neutral-400" aria-hidden="true" />
@@ -160,7 +160,7 @@ export function PackageGuide() {
                     onClick={() => copy(localCommands, "local")}
                   />
                 </div>
-                <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-6 text-neutral-300"><code>{localCommands}</code></pre>
+                <pre tabIndex={0} aria-label="Local repository commands" className="overflow-x-auto p-4 font-mono text-[13px] leading-6 text-neutral-300"><code>{localCommands}</code></pre>
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -40,4 +41,17 @@ test("keeps all public routes free of browser errors and warnings", async ({ pag
     await page.locator("main").waitFor({ state: "visible" });
   }
   expect(messages).toEqual([]);
+});
+
+test("keeps every public route free of automated WCAG A and AA violations", async ({ page }) => {
+  for (const route of ["/", "/playground", "/install", "/docs"]) {
+    await page.goto(route, { waitUntil: "networkidle" });
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+      .analyze();
+    expect(
+      results.violations,
+      `${route}: ${results.violations.map(({ id, help }) => `${id} (${help})`).join(", ")}`,
+    ).toEqual([]);
+  }
 });

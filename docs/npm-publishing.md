@@ -1,6 +1,10 @@
 # npm publishing guide
 
-Orbsona is published as the public package [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona) under the [`accidental-revenue`](https://www.npmjs.com/org/accidental-revenue) npm organization. The current public release is `0.2.0`.
+Orbsona is published as the public package [`@accidental-revenue/orbsona`](https://www.npmjs.com/package/@accidental-revenue/orbsona) under the [`accidental-revenue`](https://www.npmjs.com/org/accidental-revenue) npm organization. The registry is the source of truth for the current public version:
+
+```bash
+npm view @accidental-revenue/orbsona version
+```
 
 ## Ownership and package names
 
@@ -25,7 +29,16 @@ In the npm package settings for `@accidental-revenue/orbsona`, add a trusted pub
 - environment: leave empty unless the workflow is later assigned one
 - allowed actions: `npm publish`
 
-After the trusted publisher is saved, run the **Publish package** workflow from the repository Actions tab. The workflow verifies lint, package tests, the production build, and the high-severity dependency audit before publishing. For a public repository and package, npm generates provenance automatically.
+After the trusted publisher is saved, create and push a tag that exactly matches the version in `packages/orbsona/package.json`, then run **Publish package** from that tag. The workflow refuses branches, mismatched tags, and versions that already exist on npm. It verifies lint, package and release contracts, the production build, dependency audit, and packed contents before publishing; it then verifies the exact version from the registry.
+
+```bash
+PACKAGE_VERSION=$(node --print "require('./packages/orbsona/package.json').version")
+git tag "v$PACKAGE_VERSION"
+git push origin "v$PACKAGE_VERSION"
+gh workflow run release.yml --ref "v$PACKAGE_VERSION"
+```
+
+For a public repository and package, npm trusted publishing generates provenance automatically.
 
 Current npm requirements for trusted publishing are npm 11.5.1 or newer and Node 22.14.0 or newer. The workflow pins compatible versions.
 
@@ -53,7 +66,7 @@ npm run build
 npm pack --dry-run --workspace @accidental-revenue/orbsona
 ```
 
-The package preview must contain only `dist`, `README.md`, `LICENSE`, and `package.json`. Do not publish if it includes environment files, credentials, application source, screenshots, or unrelated assets.
+The package preview must contain only `dist`, `README.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, and `package.json`. Do not publish if it includes environment files, credentials, application source, screenshots, or unrelated assets.
 
 ## Publish interactively
 
@@ -75,8 +88,6 @@ cd orbsona-consumer
 npm init -y
 npm install @accidental-revenue/orbsona
 ```
-
-The current public Orbsona release is `0.2.0`.
 
 The same npm-registry release works with other JavaScript package managers:
 

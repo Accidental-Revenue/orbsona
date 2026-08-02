@@ -307,6 +307,22 @@ export function migrateTopologyPreviewIdentity(identity: TopologyPreviewIdentity
   };
 }
 
+function copyAvatarIdentity(identity: AvatarIdentity): AvatarIdentity {
+  return {
+    name: identity.name,
+    background: identity.background,
+    rotateBackground: identity.rotateBackground,
+    grain: identity.grain,
+    animation: identity.animation,
+    palette: {
+      id: identity.palette.id,
+      name: identity.palette.name,
+      colors: [...identity.palette.colors],
+    },
+    seed: identity.seed,
+  };
+}
+
 export function createIdentityDocument(identity: AvatarIdentity): OrbsonaIdentityDocument {
   if (!isAvatarIdentity(identity)) {
     throw new TypeError("Identity does not match the Orbsona v2 contract.");
@@ -314,7 +330,7 @@ export function createIdentityDocument(identity: AvatarIdentity): OrbsonaIdentit
   return {
     format: ORBSONA_IDENTITY_FORMAT,
     version: ORBSONA_IDENTITY_VERSION,
-    identity,
+    identity: copyAvatarIdentity(identity),
   };
 }
 
@@ -343,7 +359,7 @@ export function parseIdentityDocument(value: unknown): IdentityDocumentResult {
     };
   }
   if (isAvatarIdentity(value.identity)) {
-    return { success: true, data: value as unknown as OrbsonaIdentityDocument };
+    return { success: true, data: createIdentityDocument(value.identity) };
   }
   if (isTopologyPreviewIdentity(value.identity)) {
     return { success: true, data: createIdentityDocument(migrateTopologyPreviewIdentity(value.identity)) };

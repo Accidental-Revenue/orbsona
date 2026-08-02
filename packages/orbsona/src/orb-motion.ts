@@ -44,6 +44,7 @@ const stateTargets: Record<AgentState, MotionTargets> = {
 };
 
 function clamp(value: number, minimum = 0, maximum = 1) {
+  if (!Number.isFinite(value)) return minimum;
   return Math.max(minimum, Math.min(maximum, value));
 }
 
