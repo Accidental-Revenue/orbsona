@@ -17,6 +17,7 @@ import {
   runtimeStates,
 } from "@accidental-revenue/orbsona";
 import Link from "next/link";
+import { InstallCommand } from "@/components/package/install-command";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -76,13 +77,6 @@ const projectFacts = [
     title: "Provider-neutral",
     body: "The package exposes semantic states. It does not bundle or claim first-party adapters for voice or agent providers.",
   },
-];
-
-const installCommands = [
-  ["npm", "npm install @accidental-revenue/orbsona"],
-  ["pnpm", "pnpm add @accidental-revenue/orbsona"],
-  ["Yarn", "yarn add @accidental-revenue/orbsona"],
-  ["Bun", "bun add @accidental-revenue/orbsona"],
 ];
 
 const componentProps = [
@@ -175,14 +169,7 @@ export default function DocumentationPage() {
             <p className="mt-4 max-w-3xl text-sm leading-6 text-neutral-500">
               npm, pnpm, Yarn, and Bun install the same public <a href="https://www.npmjs.com/package/@accidental-revenue/orbsona" target="_blank" rel="noreferrer" className="font-mono text-xs text-neutral-300 underline decoration-white/20 underline-offset-4 hover:text-white">@accidental-revenue/orbsona</a> release. Choose the manager already used by your application.
             </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {installCommands.map(([manager, command]) => (
-                <div key={manager} className="rounded-xl border border-white/[0.1] bg-black/20 p-4">
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-neutral-600">{manager}</p>
-                  <code className="mt-2 block overflow-x-auto font-mono text-sm text-neutral-300">{command}</code>
-                </div>
-              ))}
-            </div>
+            <InstallCommand className="mt-4 max-w-3xl" />
           </section>
 
           <section className="mt-5" aria-labelledby="why-identity">
