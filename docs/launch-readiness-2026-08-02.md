@@ -23,13 +23,13 @@ Production promotion remains intentionally gated on:
 - Made scrollable code examples keyboard focusable and resolved the automated WCAG A/AA findings.
 - Removed stale publication claims from the maintainer guide and made the npm registry the version source of truth.
 - Restricted npm publication to an unpublished version on the exact matching Git tag.
-- Declared exact install-script approvals and enabled strict install-script enforcement.
+- Declared exact install-script approvals and pinned strict npm 11.17.0 installation in CI, Vercel, and the release workflow.
 
 ## Verification evidence
 
 ### Clean repository gates
 
-- `npm ci`: pass, 368 packages installed, zero vulnerabilities.
+- `npm ci --strict-allow-scripts`: pass, 368 packages installed, zero vulnerabilities.
 - `npm run lint`: pass.
 - `npm run test:package`: pass.
 - `npm run test:release`: pass.

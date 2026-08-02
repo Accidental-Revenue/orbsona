@@ -25,7 +25,7 @@ All notable changes to Orbsona are documented here. The project follows semantic
 - Bound seed-derived geometry caches and normalize non-finite signal input before it reaches the renderer.
 - Canonicalize parsed identity documents and return defensive copies of nested palette data.
 - Add clean-consumer, real-frame-cadence, accessibility, compact-layout, performance, security-header, and release-contract gates.
-- Require exact install-script approvals and an unpublished, matching Git tag before the trusted-publishing workflow can release.
+- Require exact install-script approvals in CI and Vercel, plus an unpublished, matching Git tag before the trusted-publishing workflow can release.
 - Add third-party notices to the repository and published package.
 - Resolve the dependency audit to zero known vulnerabilities.
 

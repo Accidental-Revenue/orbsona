@@ -62,9 +62,13 @@ From the repository root:
 ```bash
 npm run lint
 npm run test:package
+npm run test:release
 npm run build
+npm audit --audit-level=high
 npm pack --dry-run --workspace @accidental-revenue/orbsona
 ```
+
+CI, the npm release workflow, and Vercel all install with npm 11.17.0 and `--strict-allow-scripts`. The only approved dependency install scripts are exact versions declared in the root `allowScripts` policy.
 
 The package preview must contain only `dist`, `README.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, and `package.json`. Do not publish if it includes environment files, credentials, application source, screenshots, or unrelated assets.
 
