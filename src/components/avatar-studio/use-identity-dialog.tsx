@@ -142,6 +142,7 @@ export function UseIdentityDialog({ identity, open, onClose, onDownloadJson }: U
           <pre
             id="identity-usage-panel"
             role="tabpanel"
+            tabIndex={0}
             aria-labelledby={`identity-tab-${tab}`}
             className="mt-3 max-h-[320px] overflow-auto rounded-2xl border border-white/[0.1] bg-black/30 p-5 font-mono text-[13px] leading-6 text-neutral-300"
           >

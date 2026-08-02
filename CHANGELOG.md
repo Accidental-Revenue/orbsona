@@ -2,15 +2,23 @@
 
 All notable changes to Orbsona are documented here. The project follows semantic versioning for the public package.
 
+## [Unreleased]
+
+### Fixed
+
+- Tolerate npm propagation delay when verifying a newly published release.
+
 ## [0.2.0] - 2026-08-02
 
 ### Changed
 
-- Replace preset-based visuals with Orbsona's original Living Topographies renderer.
-- Introduce eight deterministic morphologies and four material models.
-- Make runtime state deform one continuous surface instead of drawing separate overlay effects.
-- Move the portable identity contract to version 2 with `morphology` and `material` fields.
-- Remove the `thinking-orbs` runtime dependency.
+- Restore the layered relief and foreground animations used by existing identities.
+- Add Orbsona-authored Phyllotaxis and Radiolaria systems derived from biological geometry.
+- Add four deterministic relief backgrounds with optional slow rotation and grain.
+- Move the portable identity contract to version 2 while retaining the layered `background` and `animation` model.
+- Restore `thinking-orbs` as an MIT-licensed, attributed runtime dependency.
+- Render live avatars at the browser display cadence and keep ambient decoration on a separate low-cost schedule.
+- Preserve a clear 128 pixel Studio preview at compact desktop and mobile viewport heights.
 
 ### Compatibility
 
@@ -19,8 +27,13 @@ All notable changes to Orbsona are documented here. The project follows semantic
 
 ### Security and quality
 
-- Add deterministic topology and state-grammar tests.
-- Remove the retired transitive package and resolve the dependency audit to zero known vulnerabilities.
+- Add deterministic nature-geometry, migration, masking, and launch-regression tests.
+- Bound seed-derived geometry caches and normalize non-finite signal input before it reaches the renderer.
+- Canonicalize parsed identity documents and return defensive copies of nested palette data.
+- Add clean-consumer, real-frame-cadence, accessibility, compact-layout, performance, security-header, and release-contract gates.
+- Require exact install-script approvals in CI and Vercel, plus an unpublished, matching Git tag before the trusted-publishing workflow can release.
+- Add third-party notices to the repository and published package.
+- Resolve the dependency audit to zero known vulnerabilities.
 
 ## [0.1.1] - 2026-07-24
 
@@ -42,6 +55,7 @@ All notable changes to Orbsona are documented here. The project follows semantic
 
 - First public release of the identity contract, React renderer, local-first Studio, Playground, Install, and Documentation.
 
+[Unreleased]: https://github.com/Accidental-Revenue/orbsona/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/Accidental-Revenue/orbsona/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Accidental-Revenue/orbsona/releases/tag/v0.1.0

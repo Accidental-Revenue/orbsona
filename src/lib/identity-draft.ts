@@ -3,14 +3,15 @@ import {
   initialIdentity,
   isAvatarIdentity,
   isLegacyAvatarIdentityV1,
+  isTopologyPreviewIdentity,
   migrateLegacyIdentityV1,
+  migrateTopologyPreviewIdentity,
 } from "@accidental-revenue/orbsona";
 
 export const IDENTITY_DRAFT_EVENT = "orbsona:identity-draft-change";
 const IDENTITY_DRAFT_KEY = "orbsona:identity";
 
 function notifyDraftChange() {
-  window.dispatchEvent(new Event("orbsona:identity-change"));
   window.dispatchEvent(new Event(IDENTITY_DRAFT_EVENT));
 }
 
@@ -22,6 +23,11 @@ export function readIdentityDraft(): AvatarIdentity | null {
     if (isAvatarIdentity(value)) return value;
     if (isLegacyAvatarIdentityV1(value)) {
       const migrated = migrateLegacyIdentityV1(value);
+      window.localStorage.setItem(IDENTITY_DRAFT_KEY, JSON.stringify(migrated));
+      return migrated;
+    }
+    if (isTopologyPreviewIdentity(value)) {
+      const migrated = migrateTopologyPreviewIdentity(value);
       window.localStorage.setItem(IDENTITY_DRAFT_KEY, JSON.stringify(migrated));
       return migrated;
     }

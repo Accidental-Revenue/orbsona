@@ -31,7 +31,7 @@ export function AgentPresence({ state, voiceLevel }) {
 }
 ```
 
-The renderer accepts a stable identity and a live semantic state. Identity controls recognition; state and signal levels control behavior.
+The stable identity controls recognition. Semantic state and signal levels control live behavior.
 
 ### React props
 
@@ -46,7 +46,7 @@ The renderer accepts a stable identity and a live semantic state. Identity contr
 | `className` | `string` | Class name applied to the canvas wrapper |
 | `style` | `CSSProperties` | Inline styles applied to the canvas wrapper |
 
-When `inputLevel` and `outputLevel` are omitted, `energy` drives both.
+When `inputLevel` and `outputLevel` are omitted, `energy` drives both. Signal values are normalized to the `0…1` range; non-finite values are treated as zero so an invalid provider sample cannot poison the animation state.
 
 ## Runtime states
 
@@ -61,7 +61,7 @@ When `inputLevel` and `outputLevel` are omitted, `energy` drives both.
 | `success` | Briefly acknowledging completion |
 | `error` | Waiting for attention or recovery |
 
-Provider events should be mapped into these states at the application boundary. This keeps the avatar independent from any single voice or agent SDK.
+Map provider events into these states at the application boundary. The renderer does not claim first-party adapters or partnerships with voice and agent providers.
 
 ## Identity contract
 
@@ -82,8 +82,10 @@ An Orbsona identity is a portable, versioned JSON document:
   "version": 2,
   "identity": {
     "name": "Aster",
-    "morphology": "basin",
-    "material": "mineral",
+    "background": "relief",
+    "rotateBackground": false,
+    "grain": false,
+    "animation": "phyllotaxis",
     "palette": {
       "id": "ion",
       "name": "Ion",
@@ -94,21 +96,28 @@ An Orbsona identity is a portable, versioned JSON document:
 }
 ```
 
+`background`, its optional finish controls, and `palette` define the body of the orb. `animation` defines its foreground motion system. `seed` makes the individual reproducible. Version 1 identities remain importable and preserve their layered appearance.
+
+The published `identityFromSeed` helper preserves the original v1 mapping. Use `identityFromSeedV2` when generating from the expanded catalog that includes Phyllotaxis and Radiolaria. This explicit split prevents a package update from silently remapping an existing numeric seed.
+
 Use `parseIdentityJson` at import boundaries. It returns a discriminated result instead of throwing for invalid files. PNG and WebM are fallback assets; the identity document is the source of truth for live runtimes.
 
-Version 2 separates shape from surface. `morphology` selects one of eight original terrain generators. `material` selects Mineral, Glass, Ink, or Frost shading. Version 1 files remain importable and are migrated to the closest v2 combination by `parseIdentityJson`.
+## Motion systems
+
+Orbsona-authored presets include Phyllotaxis, a golden-angle growth field inspired by seed heads, and Radiolaria, a rotating spherical lattice inspired by microscopic silica skeletons. The package also restores the motion collection from [`thinking-orbs`](https://github.com/Jakubantalik/thinking-orbs), used under its MIT license.
+
+The two sources are identified in the exported animation catalog. Full attribution is shipped in `THIRD_PARTY_NOTICES.md` and retained in source distributions.
 
 ## Rendering behavior
 
 - Respects `prefers-reduced-motion`.
 - Caps canvas pixel density at 2x.
-- Uses bounded topology resolutions tuned for legibility from 20 to 512 CSS pixels.
+- Uses compact density at 20–32 pixels and the full preset at larger sizes.
+- Updates motion on the browser display cadence instead of imposing a lower frame-rate cap.
 - Pauses work when the avatar or browser tab is not visible.
-- Masks the complete composition to a circular export boundary.
-- Deforms the same topology for every runtime state. Listening gathers, thinking divides, speaking sends pressure, working creates flow, success aligns, and error fractures.
+- Masks background, foreground motion, glow, and state effects to one circular boundary.
+- Keeps relief and foreground motion independently configurable.
 - Exposes a semantic `role="img"` label containing identity and state.
-
-The topology generation, material renderer, state grammar, and seed mapping are implemented in Orbsona. The runtime has no visual-preset dependency.
 
 ## Local development
 

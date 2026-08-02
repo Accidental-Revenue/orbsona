@@ -21,13 +21,14 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run build && node scripts/contract-smoke.mjs && node scripts/v2-contract.mjs && node scripts/topology-engine.mjs && node scripts/launch-regression.mjs",
+    "test": "npm run build && node scripts/contract-smoke.mjs && node scripts/v2-contract.mjs && node scripts/bounded-cache.mjs && node scripts/nature-presets.mjs && node scripts/launch-regression.mjs",
     "prepack": "npm run test"
   },
   "keywords": [
@@ -62,5 +63,8 @@
   "devDependencies": {
     "@types/react": "^19",
     "typescript": "^5"
+  },
+  "dependencies": {
+    "thinking-orbs": "0.1.1"
   }
 }

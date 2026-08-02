@@ -33,11 +33,11 @@ export function RuntimePlayground() {
         </div>
       </header>
 
-      <div className="grid min-h-0 flex-1 xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(240px,42dvh)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_380px] xl:grid-rows-1">
         <div className="preview-stage relative grid min-h-0 place-items-center overflow-hidden border-b border-white/[0.1] bg-[#0b0b0b] xl:border-r xl:border-b-0">
           <div className="preview-grid absolute inset-0" aria-hidden="true" />
           <div className="relative z-[1] grid place-items-center">
-            <AgentAvatar identity={identity} state={state} energy={energy} size={288} />
+            <AgentAvatar identity={identity} state={state} energy={energy} size="clamp(128px, 30dvh, 288px)" />
             <div className="mt-3 text-center">
               <p className="font-display text-xl font-semibold text-neutral-100">{activeState.label}</p>
               <p className="mt-1 text-sm text-neutral-500">{activeState.description}</p>
@@ -91,7 +91,7 @@ export function RuntimePlayground() {
 
           <div className="mt-6 rounded-xl border border-white/[0.1] bg-black/20 p-4">
             <p className="mb-3 text-sm font-medium text-neutral-300">Component input</p>
-            <pre className="overflow-x-auto font-mono text-[13px] leading-6 text-neutral-400"><code>{`<AgentAvatar
+            <pre tabIndex={0} aria-label="Current AgentAvatar input" className="overflow-x-auto font-mono text-[13px] leading-6 text-neutral-400"><code>{`<AgentAvatar
   identity={identity}
   state="${state}"
   energy={${energy.toFixed(2)}}

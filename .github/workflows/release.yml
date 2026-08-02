@@ -7,6 +7,10 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -27,14 +31,46 @@ jobs:
         run: npm install --global npm@11.17.0
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --strict-allow-scripts
+
+      - name: Validate immutable release ref
+        run: |
+          PACKAGE_VERSION=$(node --print "require('./packages/orbsona/package.json').version")
+          EXPECTED_REF="refs/tags/v$PACKAGE_VERSION"
+          if [ "$GITHUB_REF" != "$EXPECTED_REF" ]; then
+            echo "Release workflow must run from $EXPECTED_REF; received $GITHUB_REF."
+            exit 1
+          fi
+          if npm view "@accidental-revenue/orbsona@$PACKAGE_VERSION" version >/dev/null 2>&1; then
+            echo "@accidental-revenue/orbsona@$PACKAGE_VERSION already exists on npm."
+            exit 1
+          fi
 
       - name: Verify release
         run: |
           npm run lint
           npm run test:package
+          npm run test:release
           npm run build
           npm audit --audit-level=high
 
+      - name: Inspect release artifact
+        run: npm pack --dry-run --workspace @accidental-revenue/orbsona
+
       - name: Publish public package
         run: npm publish --workspace @accidental-revenue/orbsona --access public
+
+      - name: Verify registry release
+        run: |
+          PACKAGE_VERSION=$(node --print "require('./packages/orbsona/package.json').version")
+          for attempt in {1..12}; do
+            PUBLISHED_VERSION=$(npm view "@accidental-revenue/orbsona@$PACKAGE_VERSION" version 2>/dev/null || true)
+            if [ "$PUBLISHED_VERSION" = "$PACKAGE_VERSION" ]; then
+              echo "Verified @accidental-revenue/orbsona@$PACKAGE_VERSION from npm."
+              exit 0
+            fi
+            echo "Registry has not propagated attempt $attempt/12; retrying in 5 seconds."
+            sleep 5
+          done
+          echo "Published version did not become readable from npm within 60 seconds."
+          exit 1
